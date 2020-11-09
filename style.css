@@ -28,6 +28,16 @@ body {
     border-radius: 50px;
     line-height: 13px;
 }
+.table-title .view-map {
+    float: right;
+    height: 30px;
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: none;
+    min-width: 100px;
+    border-radius: 50px;
+    line-height: 13px;
+}
 .table-title .add-new i {
     margin-right: 4px;
 }
@@ -84,4 +94,9 @@ table.table td .add {
 }
 button{
 	margin: 1%;
+}
+img.map{
+	display: block;
+    margin-left: auto;
+    margin-right: auto
 }
