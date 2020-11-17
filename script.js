@@ -8,7 +8,9 @@ $(document).ready(function(){
         var row = '<tr>' +
             '<td><input type="text" class="form-control" name="first-name" id="first-name"></td>' +
             '<td><input type="text" class="form-control" name="last-name" id="last-name"></td>' +
-            '<td><input type="text" class="form-control" name="promotion" id="promotion"></td>' +
+            '<td><select id="promos" name="promos"><option value="CITISE1">CITISE1</option><option value="CITISE2">CITISE2</option>' +
+			'<option value="FISE1">FISE1</option><option value="FISE2">FISE2</option><option value="FISE3" selected>FISE3</option> </select>' +
+			//'<input type="text" class="form-control" name="promotion" id="promotion"></td>' +
 			'<td><input type="text" class="form-control" name="country" id="country"></td>' +
 			'<td><input type="text" class="form-control" name="city" id="city"></td>' + 
 			'<td><input type="text" class="form-control" name="start-date" id="start-date"></td>' + 
@@ -38,7 +40,23 @@ $(document).ready(function(){
 			});			
 			$(this).parents("tr").find(".add, .edit").toggle();
 			$(".add-new").removeAttr("disabled");
-		}		
+		}
+		var empty = false;
+		var sel = $(this).parents("tr").find('select');
+        sel.each(function(){
+			if(!$(this).val()){
+				$(this).addClass("error");
+				empty = true;
+			} else{
+                $(this).removeClass("error");
+            }
+		});
+		$(this).parents("tr").find(".error").first().focus();
+		if(!empty){
+			sel.each(function(){
+				$(this).parent("td").html($(this).val());
+			});
+		}				
     });
 	// Edit row on edit button click
 	$(document).on("click", ".edit", function(){		
