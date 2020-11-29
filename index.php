@@ -1,4 +1,18 @@
 <!DOCTYPE html>
+<?php
+// Include config file
+require_once "config.php";
+
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+?>
+
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -50,7 +64,7 @@ function viewMap() {
 			</div>
 		</div>
 		<table class="table table-bordered">
-			<thead>
+			<thead> <!-- header for the table -->
 				<tr>
 					<th>First Name</th>
 					<th>Last Name</th>
@@ -63,20 +77,31 @@ function viewMap() {
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td>Local</td>
-					<td>Test</td>
-					<td>FISE3</td>
-					<td>France</td>
-					<td>Sainté c'est le S</td>
-					<td>07/09/2020</td>
-					<td>22/02/2021</td>
-					<td>
-						<a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
-						<a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-						<a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-					</td>
-				</tr>
+			<!-- get mobilities from Database -->
+			<?php
+			//query
+			$query_mobilities ="select * from mobilities;";
+			$result_mobilities =  mysqli_query($link, $query_mobilities);
+			//$num = mysqli_num_rows($result_mobilities);//number of rows from the query
+			
+			//display in table
+			while ($row = mysqli_fetch_array($result_mobilities)) {
+				echo "<tr>";
+				echo "<td>".$row[firstname]."</td>";
+				echo "<td>".$row[lastname]."</td>";
+				echo "<td>".$row[promotion]."</td>";
+				echo "<td>".$row[dest_country]."</td>";
+				echo "<td>".$row[dest_city]."</td>";
+				echo "<td>".$row[date_start]."</td>";
+				echo "<td>".$row[date_stop]."</td>";
+				echo "<td>";
+				echo "<a class=\"add\" title=\"Add\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE03B;</i></a>";
+				echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE254;</i></a>";
+				echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
+				echo "</td>";
+				echo "</tr>";
+			};
+			?>
 			</tbody>
 		</table>
 		<div class="div-map" style="display: none">
@@ -113,6 +138,6 @@ function viewMap() {
 	</div>
 </div>
 </div>
-
+<?php mysqli_close($link); ?>
 </body>
 </html>
