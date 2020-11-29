@@ -111,9 +111,37 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
                 <label>Username</label>
-                <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
+                <input type="text" name="username" id="usrname" class="form-control" value="<?php echo $username; ?>" disabled>
                 <span class="help-block"><?php echo $username_err; ?></span>
-            </div>    
+            </div>
+            <div class="form-group <?php echo (!empty($first_name_err)) ? 'has-error' : ''; ?>">
+                <label>Firstname</label>
+                <input type="text" name="firstname" id="fname" class="form-control" value="<?php echo $firstname; ?>">
+                <span class="help-block"><?php echo $first_name_err; ?></span>
+            </div>
+            <div class="form-group <?php echo (!empty($last_name_err)) ? 'has-error' : ''; ?>">
+                <label>Lastname</label>
+                <input type="text" name="lastname" id="lname" class="form-control" value="<?php echo $lastname; ?>">
+                <span class="help-block"><?php echo $last_name_err; ?></span>
+            </div>
+            <script>
+                //creates a username using first and lastname of the user
+                function update_username(){
+                    usrname.value = lname.value.toLowerCase() + "." + fname.value.toLowerCase();
+                }
+                fname.addEventListener('input', update_username);
+                lname.addEventListener('input', update_username);
+            </script>
+            <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
+                <label>Mail</label>
+                <input type="mail" name="email" class="form-control" value="<?php echo $email; ?>">
+                <span class="help-block"><?php echo $email_name_err; ?></span>
+            </div>
+            <div class="form-group <?php echo (!empty($promo_err)) ? 'has-error' : ''; ?>">
+                <label>Promotion</label>
+                <input type="text" name="promotion" class="form-control" value="<?php echo $promotion; ?>">
+                <span class="help-block"><?php echo $promo_err; ?></span>
+            </div>     
             <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
                 <label>Password</label>
                 <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
