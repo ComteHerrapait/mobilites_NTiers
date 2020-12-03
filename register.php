@@ -159,8 +159,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             <script>
                 //creates a username using first and lastname of the user
                 function update_username(){
-                    usrname.value = lname.value.toLowerCase() + "." + fname.value.toLowerCase();
-                    usrname.value = usrname.value.normalize('NFKD').replace(/[^\w]/g, ''); //remove accents
+                    //use temp variables because the replacing function removes the "."
+                    var lname_temp = lname.value.normalize('NFKD').replace(/[^\w]/g, ''); //remove accents;
+                    var fname_temp = fname.value.normalize('NFKD').replace(/[^\w]/g, ''); 
+                    usrname.value = lname_temp.toLowerCase() + "." + fname_temp.toLowerCase();
                 }
                 fname.addEventListener('input', update_username);
                 lname.addEventListener('input', update_username);
