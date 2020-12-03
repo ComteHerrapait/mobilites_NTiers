@@ -3,8 +3,8 @@
 require_once "config.php";
  
 // Define variables and initialize with empty values
-$username = $password = $confirm_password = "";
-$username_err = $password_err = $confirm_password_err = "";
+$username = $password = $confirm_password = $fname = $lname = $promotion = $email = "";
+$username_err = $password_err = $confirm_password_err = $fname_err = $lname_err = $promo_err = $email_err = "";
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -60,20 +60,52 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $confirm_password_err = "Password did not match.";
         }
     }
-    
+
+    // validate promotion
+    if(empty($_POST["promotion"])){
+        $promo_err = "Please enter a promotion.";     
+    } else{
+        $promotion = trim($_POST["promotion"]);
+    }
+
+    // validate email
+    if(empty($_POST["email"])){
+        $email_err = "Please enter a email.";     
+    } elseif (filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)){
+        $email = trim($_POST["email"]);
+    } else {
+        $email_err = "This email is invalid.";
+    }
+
+    // validate first and last name
+    if(empty($_POST["lastname"])){
+        $lname_err = "Please enter a last name.";     
+    } else{
+        $lname = trim($_POST["lastname"]);
+    }
+    if(empty($_POST["firstname"])){
+        $fname_err = "Please enter a first name.";     
+    } else{
+        $fname = trim($_POST["firstname"]);
+    }
+
     // Check input errors before inserting in database
-    if(empty($username_err) && empty($password_err) && empty($confirm_password_err)){
+    if(empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($first_name_err) && empty($last_name_err) && empty($promo_err) && empty($email_err)){
         
         // Prepare an insert statement
-        $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+        $sql = "INSERT INTO users (username, password, promotion, firstname, lastname, email) VALUES (?, ?, ?, ?, ?, ?)";
          
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
+            mysqli_stmt_bind_param($stmt, "ssssss", $param_username, $param_password, $param_promo, $param_fname, $param_lname, $param_email);
             
             // Set parameters
             $param_username = $username;
             $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+            $param_promo = $promotion;
+            $param_fname = $fname;
+            $param_lname = $lname;
+            $param_email = $email;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
@@ -105,24 +137,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     </style>
 </head>
 <body>
-    <div class="wrapper">
+    <div class="wrapper" >
         <h2>Sign Up</h2>
         <p>Please fill this form to create an account.</p>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" >
             <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
                 <label>Username</label>
                 <input type="text" name="username" id="usrname" class="form-control" value="<?php echo $username; ?>" readonly="readonly">
                 <span class="help-block"><?php echo $username_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($first_name_err)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($fname_err)) ? 'has-error' : ''; ?>">
                 <label>Firstname</label>
-                <input type="text" name="firstname" id="fname" class="form-control" value="<?php echo $firstname; ?>">
-                <span class="help-block"><?php echo $first_name_err; ?></span>
+                <input type="text" name="firstname" id="fname" class="form-control" value="<?php echo $fname; ?>">
+                <span class="help-block"><?php echo $fname_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($last_name_err)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($lname_err)) ? 'has-error' : ''; ?>">
                 <label>Lastname</label>
-                <input type="text" name="lastname" id="lname" class="form-control" value="<?php echo $lastname; ?>">
-                <span class="help-block"><?php echo $last_name_err; ?></span>
+                <input type="text" name="lastname" id="lname" class="form-control" value="<?php echo $lname; ?>">
+                <span class="help-block"><?php echo $lname_err; ?></span>
             </div>
             <script>
                 //creates a username using first and lastname of the user
@@ -135,11 +167,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
                 <label>Mail</label>
                 <input type="mail" name="email" class="form-control" value="<?php echo $email; ?>">
-                <span class="help-block"><?php echo $email_name_err; ?></span>
+                <span class="help-block"><?php echo $email_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($promo_err)) ? 'has-error' : ''; ?>">
                 <label>Promotion</label>
-                <input type="text" name="promotion" class="form-control" value="<?php echo $promotion; ?>">
+                <select name="promotion" class="form-control" value="<?php echo $promotion; ?>">
+                    <?php
+                    foreach ( array("Other", "FISE1", "FISE2", "FISE3","FISA-DE1", "FISA-DE2", "FISA-DE3", "FISA-IPSI1", "FISA-IPSI2", "FISA-IPSI3", "CITISE1", "CITISE2", "SMW", "Info-Com", "DCIMN1", "DCIMN2", "DTA", "Administration", "Alumni") as $promo_name){
+                        echo "<option value=\"$promo_name\">$promo_name</option>";
+                    }
+                    ?>
+
+                </select>
                 <span class="help-block"><?php echo $promo_err; ?></span>
             </div>     
             <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
