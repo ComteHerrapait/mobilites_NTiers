@@ -160,6 +160,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 //creates a username using first and lastname of the user
                 function update_username(){
                     usrname.value = lname.value.toLowerCase() + "." + fname.value.toLowerCase();
+                    usrname.value = usrname.value.normalize('NFKD').replace(/[^\w]/g, ''); //remove accents
                 }
                 fname.addEventListener('input', update_username);
                 lname.addEventListener('input', update_username);
