@@ -50,7 +50,7 @@ function viewMap() {
 </script>
 </head>
 <body>
-<?php echo "php is working on this page !";?>
+<button type="button" class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
 <div class="container-lg">
 <div class="table-responsive">
 	<div class="table-wrapper">
