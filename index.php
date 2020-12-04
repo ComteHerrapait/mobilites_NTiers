@@ -51,6 +51,10 @@ function viewMap() {
 </head>
 <body>
 <button type="button" class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
+<!--This button is a temporary solution TODO:make something definitive-->
+<button type="button" class="btn btn-info" onclick="window.location.href='new_mobility.php'">New Mobility</button>
+<button type="button" class="btn btn-info" onclick="window.location.href='new_partner.php'">New Partner</button>
+
 <?php 
 		if ($_SESSION["is_admin"]) {
 		echo "you are an admin";
@@ -63,7 +67,7 @@ function viewMap() {
 			<div class="row">
 				<div class="col-sm-8"><h2>Student <b>Mobility</b></h2></div>
 				<div class="col-sm-4">
-					<button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
+					<button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button> 
 					<button type="button" class="btn btn-info view-map" id="btn-map" onclick="viewMap()">View Map</button>
 				</div>
 			</div>
