@@ -18,11 +18,44 @@ $name_err = $country_err = $city_err = $location1_err = $location2_err = "";
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    // validate name
-    if(empty($_POST["name"])){
-        $name_err = "Please enter a name.";     
+    // validate name and city and check if unique combinaison
+    if(empty($_POST["name"]) or empty($_POST["city"])){
+        if (empty($_POST["name"])){
+            $name_err = "Please enter a name.";
+        } else {
+            $city_err = "Please enter a city name.";
+        }  
     } else{
         $name = trim($_POST["name"]);
+        // Prepare a select statement
+        $sql = "SELECT partner_id FROM partners WHERE (LOWER(name) = ? AND LOWER(city) = ?)";
+        
+        if($stmt = mysqli_prepare($link, $sql)){
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "ss", $param_name, $param_city);
+            
+            // Set parameters
+            $param_name = strtolower(trim($_POST["name"]));
+            $param_city = strtolower(trim($_POST["city"]));
+            
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+                /* store result */
+                mysqli_stmt_store_result($stmt);
+                
+                if(mysqli_stmt_num_rows($stmt) > 0){
+                    $name_err = "This entry already exists.";
+                } else{
+                    $name = trim($_POST["name"]);
+                    $city = trim($_POST["city"]);
+                }
+            } else{
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+
+            // Close statement
+            mysqli_stmt_close($stmt);
+        }
     }
 
     // validate country
@@ -32,13 +65,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $country = trim($_POST["country"]);
     }
     
-    // validate city
-    if(empty($_POST["city"])){
-        $city_err = "Please enter a city name.";     
-    } else{
-        $city = trim($_POST["city"]);
-    }
-
     //get location
     if (empty($_POST["location1"]) or (empty($_POST["location2"]))){
         $location_err = "Click on Find Location to generate Latitude and Longitude for your city";
@@ -46,7 +72,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $location1 = trim($_POST["location1"]);
         $location2 = trim($_POST["location2"]);
     }
-    
 
     // Check input errors before inserting in database
     if(empty($name_err) && empty($country_err) && empty($city_err) && empty($location_err)){
