@@ -5,9 +5,9 @@ require_once "config.php";
 
 // Initialize the session
 session_start();
- 
+
 // Check if the user is logged in, if not then redirect him to login page
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
 }
@@ -17,39 +17,39 @@ $name = $country = $city = $location1 = $location2 = "";
 $name_err = $country_err = $city_err = $location1_err = $location2_err = "";
 
 // Processing form data when form is submitted
-if($_SERVER["REQUEST_METHOD"] == "POST"){
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // validate name and city and check if unique combinaison
-    if(empty($_POST["name"]) or empty($_POST["city"])){
-        if (empty($_POST["name"])){
+    if (empty($_POST["name"]) or empty($_POST["city"])) {
+        if (empty($_POST["name"])) {
             $name_err = "Please enter a name.";
         } else {
             $city_err = "Please enter a city name.";
-        }  
-    } else{
+        }
+    } else {
         $name = trim($_POST["name"]);
         // Prepare a select statement
         $sql = "SELECT partner_id FROM partners WHERE (LOWER(name) = ? AND LOWER(city) = ?)";
-        
-        if($stmt = mysqli_prepare($link, $sql)){
+
+        if ($stmt = mysqli_prepare($link, $sql)) {
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "ss", $param_name, $param_city);
-            
+
             // Set parameters
             $param_name = strtolower(trim($_POST["name"]));
             $param_city = strtolower(trim($_POST["city"]));
-            
+
             // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
+            if (mysqli_stmt_execute($stmt)) {
                 /* store result */
                 mysqli_stmt_store_result($stmt);
-                
-                if(mysqli_stmt_num_rows($stmt) > 0){
+
+                if (mysqli_stmt_num_rows($stmt) > 0) {
                     $name_err = "This entry already exists.";
-                } else{
+                } else {
                     $name = trim($_POST["name"]);
                     $city = trim($_POST["city"]);
                 }
-            } else{
+            } else {
                 echo "Oops! Something went wrong. Please try again later.";
             }
 
@@ -59,14 +59,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
 
     // validate country
-    if(empty($_POST["country"])){
-        $country_err = "Please enter a country name.";     
-    } else{
+    if (empty($_POST["country"])) {
+        $country_err = "Please enter a country name.";
+    } else {
         $country = trim($_POST["country"]);
     }
-    
+
     //get location
-    if (empty($_POST["location1"]) or (empty($_POST["location2"]))){
+    if (empty($_POST["location1"]) or (empty($_POST["location2"]))) {
         $location_err = "Click on Find Location to generate Latitude and Longitude for your city";
     } else {
         $location1 = trim($_POST["location1"]);
@@ -74,31 +74,31 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
 
     // Check input errors before inserting in database
-    if(empty($name_err) && empty($country_err) && empty($city_err) && empty($location_err)){
-        
+    if (empty($name_err) && empty($country_err) && empty($city_err) && empty($location_err)) {
+
         // Prepare an insert statement
         $sql = "INSERT INTO partners (name, location1, location2, country, city) VALUES (?, ?, ?, ?, ?)";
-         
-        if($stmt = mysqli_prepare($link, $sql)){
+
+        if ($stmt = mysqli_prepare($link, $sql)) {
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "sddss", $p_name, $p_location1, $p_location2, $p_country, $p_city);
-            
+
             // set parameters
             $p_name = $name;
             $p_location1 = floatval($location1);
             $p_location2 = floatval($location2);
             $p_country = $country;
-            $p_city= $city;
+            $p_city = $city;
 
             // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
+            if (mysqli_stmt_execute($stmt)) {
                 // Redirect to login page
                 header("location: login.php");
-            } else{
+            } else {
                 echo "Something went wrong. Please try again later.";
-                echo "ERROR:\n" ;
+                echo "ERROR:\n";
                 echo mysqli_stmt_errno($stmt);
-                echo "ERROR:\n" ;
+                echo "ERROR:\n";
                 echo mysqli_stmt_error($stmt);
             }
 
@@ -106,31 +106,39 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             mysqli_stmt_close($stmt);
         }
     }
-    
+
     // Close connection
     mysqli_close($link);
 }
 ?>
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
     <style type="text/css">
-        body{ font: 14px sans-serif; }
-        .wrapper{ width: 350px; padding: 20px; }
+        body {
+            font: 14px sans-serif;
+        }
+
+        .wrapper {
+            width: 350px;
+            padding: 20px;
+        }
     </style>
 </head>
+
 <body>
-    <div class="wrapper" >
+    <div class="wrapper">
         <h2>New Partner</h2>
         <p>Please fill this form to create a new partner.</p>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" >
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 
             <div class="form-group <?php echo (!empty($name_err)) ? 'has-error' : ''; ?>">
                 <label>Name</label>
-                <input type="text" name="name"  class="form-control" value="<?php echo $name; ?>">
+                <input type="text" name="name" class="form-control" value="<?php echo $name; ?>">
                 <span class="help-block"><?php echo $name_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($country_err)) ? 'has-error' : ''; ?>">
@@ -149,20 +157,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <input type="text" name="location2" id="longitude" class="form-control" value="<?php echo $location2; ?>" readonly="readonly">
                 <button type="button" class="btn btn-info view-map" id="btn-map" onclick="findLocation()">Find Location</button>
                 <script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
-                <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css"/>
+                <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css" />
                 <script>
-                    function findLocation(){
+                    function findLocation() {
                         //Latitude and Longitude are determined by Mapquest
                         //https://developer.mapquest.com/documentation/mapquest-js/v1.3/examples/geocoding-with-a-single-line-address
-                        L.mapquest.key = 'brtPFIZQrVIdU4AeUYc6GrFeVLmOEyg0';//Leon's API key
-                        var query = city.value +", "+ country.value
-                        L.mapquest.geocoding().geocode(query,response);
+                        L.mapquest.key = 'brtPFIZQrVIdU4AeUYc6GrFeVLmOEyg0'; //Leon's API key
+                        var query = city.value + ", " + country.value
+                        L.mapquest.geocoding().geocode(query, response);
+
                         function response(error, content) {
                             var location = content.results[0].locations[0];
                             var latLng = location.displayLatLng;
                             latitude.value = latLng.lat;
                             longitude.value = latLng.lng;
-                        }  
+                        }
                     }
                 </script>
                 <span class="help-block"><?php echo $location_err; ?></span>
@@ -173,6 +182,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             </div>
             <p>Changed your mind? <a href="login.php">go back</a>.</p>
         </form>
-    </div>    
+    </div>
 </body>
+
 </html>
