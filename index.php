@@ -51,7 +51,7 @@ function viewMap() {
 </head>
 <body>
 <button type="button" class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
-<!--This button is a temporary solution TODO:make something definitive-->
+<!--These buttons are a temporary solution TODO:make something definitive-->
 <button type="button" class="btn btn-info" onclick="window.location.href='new_mobility.php'">New Mobility</button>
 <button type="button" class="btn btn-info" onclick="window.location.href='new_partner.php'">New Partner</button>
 
