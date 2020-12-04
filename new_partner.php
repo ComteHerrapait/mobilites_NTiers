@@ -121,7 +121,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         //Latitude and Longitude are determined by Mapquest
                         //https://developer.mapquest.com/documentation/mapquest-js/v1.3/examples/geocoding-with-a-single-line-address
                         L.mapquest.key = 'brtPFIZQrVIdU4AeUYc6GrFeVLmOEyg0';//Leon's API key
-                        var query = country.value +", "+ city.value
+                        var query = city.value +", "+ country.value
                         L.mapquest.geocoding().geocode(query,response);
                         function response(error, content) {
                             var location = content.results[0].locations[0];
