@@ -59,8 +59,9 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 	<button type="button" class="btn btn-info" onclick="window.location.href='new_partner.php'">New Partner</button>
 
 	<?php
+	echo "session : " . $_SESSION["username"];
 	if ($_SESSION["is_admin"]) {
-		echo "you are an admin";
+		echo " (admin) ";
 	}
 	?>
 	<div class="container-lg">
@@ -104,13 +105,13 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 						//display in table
 						while ($row = mysqli_fetch_array($result_mobilities)) {
 							echo "<tr>";
-							echo "<td>" . $row[firstname] . "</td>";
-							echo "<td>" . $row[lastname] . "</td>";
-							echo "<td>" . $row[promotion] . "</td>";
-							echo "<td>" . $row[country] . "</td>";
-							echo "<td>" . $row[city] . "</td>";
-							echo "<td>" . $row[date_start] . "</td>";
-							echo "<td>" . $row[date_stop] . "</td>";
+							echo "<td>" . $row['firstname'] . "</td>";
+							echo "<td>" . $row['lastname'] . "</td>";
+							echo "<td>" . $row['promotion'] . "</td>";
+							echo "<td>" . $row['country'] . "</td>";
+							echo "<td>" . $row['city'] . "</td>";
+							echo "<td>" . $row['date_start'] . "</td>";
+							echo "<td>" . $row['date_stop'] . "</td>";
 							if ($_SESSION["is_admin"]) {
 								echo "<td>";
 								echo "<a class=\"add\" title=\"Add\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE03B;</i></a>";
@@ -132,7 +133,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 						$query_mobilities = "SELECT location1, location2, name FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
 						$result_mobilities =  mysqli_query($link, $query_mobilities);
 						while ($row = mysqli_fetch_array($result_mobilities)) {
-							array_push($php_array, [$row[name], floatval($row[location1]), floatval($row[location2])]);
+							array_push($php_array, [$row['name'], floatval($row['location1']), floatval($row['location2'])]);
 						};
 						$js_array = json_encode($php_array);
 						echo "var locations = " . $js_array . ";\n";
