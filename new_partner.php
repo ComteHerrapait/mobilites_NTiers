@@ -3,6 +3,15 @@
 // Include config file
 require_once "config.php";
 
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+
 // Define variables and initialize with empty values
 $name = $country = $city = $location1 = $location2 = "";
 $name_err = $country_err = $city_err = $location1_err = $location2_err = "";

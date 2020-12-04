@@ -3,6 +3,15 @@
 // Include config file
 require_once "config.php";
 
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+
 $student = $destination = $date_start = $date_stop = "";
 $student_err = $destination_err = $date_start_err = $date_stop_err = "";
 
@@ -90,9 +99,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" >
             <div class="form-group <?php echo (!empty($student_err)) ? 'has-error' : ''; ?>">
                 <label>Student</label>
-                <select name="student" class="form-control" value="<?php echo $student; ?>">
+                <select name="student" class="form-control" id="student" value="<?php echo $student; ?>">
                     <?php
                         $query = "select user_id, username from users";
+                        if (!$_SESSION["is_admin"]) {
+                            $current_id = $_SESSION["id"];
+                            $query = $query." where user_id = ".$current_id;
+                        }
                         if ($stmt = $link->prepare($query)) {
                             $stmt->execute();
                             $stmt->bind_result($user_id, $username);
