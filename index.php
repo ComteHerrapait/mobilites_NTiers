@@ -51,6 +51,11 @@ function viewMap() {
 </head>
 <body>
 <button type="button" class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
+<?php 
+		if ($_SESSION["is_admin"]) {
+		echo "you are an admin";
+	}
+?>
 <div class="container-lg">
 <div class="table-responsive">
 	<div class="table-wrapper">
@@ -73,7 +78,7 @@ function viewMap() {
 					<th>City</th>
 					<th>Start Date</th>
 					<th>End Date</th>
-					<th>Actions</th>
+					<?php if ($_SESSION["is_admin"]) {echo "<th>Actions</th>";} ?>
 				</tr>
 			</thead>
 			<tbody>
@@ -94,11 +99,13 @@ function viewMap() {
 				echo "<td>".$row[dest_city]."</td>";
 				echo "<td>".$row[date_start]."</td>";
 				echo "<td>".$row[date_stop]."</td>";
-				echo "<td>";
-				echo "<a class=\"add\" title=\"Add\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE03B;</i></a>";
-				echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE254;</i></a>";
-				echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
-				echo "</td>";
+				if ($_SESSION["is_admin"]) {
+					echo "<td>";
+					echo "<a class=\"add\" title=\"Add\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE03B;</i></a>";
+					echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE254;</i></a>";
+					echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
+					echo "</td>";
+				}
 				echo "</tr>";
 			};
 			?>
