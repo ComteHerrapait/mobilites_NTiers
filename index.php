@@ -89,7 +89,7 @@ function viewMap() {
 			<!-- get mobilities from Database -->
 			<?php
 			//query
-			$query_mobilities ="select * from mobilities;";
+			$query_mobilities ="SELECT firstname, lastname, promotion, country, city, date_start, date_stop, location1, location2, name FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
 			$result_mobilities =  mysqli_query($link, $query_mobilities);
 			//$num = mysqli_num_rows($result_mobilities);//number of rows from the query
 			
@@ -99,8 +99,8 @@ function viewMap() {
 				echo "<td>".$row[firstname]."</td>";
 				echo "<td>".$row[lastname]."</td>";
 				echo "<td>".$row[promotion]."</td>";
-				echo "<td>".$row[dest_country]."</td>";
-				echo "<td>".$row[dest_city]."</td>";
+				echo "<td>".$row[country]."</td>";
+				echo "<td>".$row[city]."</td>";
 				echo "<td>".$row[date_start]."</td>";
 				echo "<td>".$row[date_stop]."</td>";
 				if ($_SESSION["is_admin"]) {
@@ -117,14 +117,18 @@ function viewMap() {
 		</table>
 		<div class="div-map" style="display: none">
 			<div id="mapID" style="height: 500px" style="width: 100%"></div>
-			<script>
-				var locations = [
-						  ["LOCATION_1", 45.452, 4.381],
-						  ["LOCATION_2", 0, 0],
-						  //["LOCATION_3", 10.7202, 122.5621],
-						  //["LOCATION_4", 11.3889, 122.6277],
-						  //["LOCATION_5", 10.5929, 122.6325]
-						];
+			<script type='text/javascript'>
+				<?php
+					//this code passes the result of the mysql request in php to a javascript array
+					$php_array = [];
+					$query_mobilities ="SELECT location1, location2, name FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
+					$result_mobilities =  mysqli_query($link, $query_mobilities);
+					while ($row = mysqli_fetch_array($result_mobilities)) {
+						array_push($php_array, [ $row[name], floatval($row[location1]), floatval($row[location2]) ]);
+					};
+					$js_array = json_encode($php_array);
+					echo "var locations = ". $js_array . ";\n";
+				?>
 				
 				var mymap = L.map('mapID').setView([45.452, 4.381], 2);
 				
