@@ -1,4 +1,18 @@
 <!DOCTYPE html>
+<?php
+// Include config file
+require_once "config.php";
+
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+?>
+
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -36,7 +50,16 @@ function viewMap() {
 </script>
 </head>
 <body>
-<?php echo "php is working on this page !";?>
+<button type="button" class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
+<!--These buttons are a temporary solution TODO:make something definitive-->
+<button type="button" class="btn btn-info" onclick="window.location.href='new_mobility.php'">New Mobility</button>
+<button type="button" class="btn btn-info" onclick="window.location.href='new_partner.php'">New Partner</button>
+
+<?php 
+		if ($_SESSION["is_admin"]) {
+		echo "you are an admin";
+	}
+?>
 <div class="container-lg">
 <div class="table-responsive">
 	<div class="table-wrapper">
@@ -44,13 +67,13 @@ function viewMap() {
 			<div class="row">
 				<div class="col-sm-8"><h2>Student <b>Mobility</b></h2></div>
 				<div class="col-sm-4">
-					<button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
+					<button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button> 
 					<button type="button" class="btn btn-info view-map" id="btn-map" onclick="viewMap()">View Map</button>
 				</div>
 			</div>
 		</div>
 		<table class="table table-bordered">
-			<thead>
+			<thead> <!-- header for the table -->
 				<tr>
 					<th>First Name</th>
 					<th>Last Name</th>
@@ -59,36 +82,53 @@ function viewMap() {
 					<th>City</th>
 					<th>Start Date</th>
 					<th>End Date</th>
-					<th>Actions</th>
+					<?php if ($_SESSION["is_admin"]) {echo "<th>Actions</th>";} ?>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td>Local</td>
-					<td>Test</td>
-					<td>FISE3</td>
-					<td>France</td>
-					<td>Sainté c'est le S</td>
-					<td>07/09/2020</td>
-					<td>22/02/2021</td>
-					<td>
-						<a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
-						<a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-						<a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-					</td>
-				</tr>
+			<!-- get mobilities from Database -->
+			<?php
+			//query
+			$query_mobilities ="SELECT firstname, lastname, promotion, country, city, date_start, date_stop, location1, location2, name FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
+			$result_mobilities =  mysqli_query($link, $query_mobilities);
+			//$num = mysqli_num_rows($result_mobilities);//number of rows from the query
+			
+			//display in table
+			while ($row = mysqli_fetch_array($result_mobilities)) {
+				echo "<tr>";
+				echo "<td>".$row[firstname]."</td>";
+				echo "<td>".$row[lastname]."</td>";
+				echo "<td>".$row[promotion]."</td>";
+				echo "<td>".$row[country]."</td>";
+				echo "<td>".$row[city]."</td>";
+				echo "<td>".$row[date_start]."</td>";
+				echo "<td>".$row[date_stop]."</td>";
+				if ($_SESSION["is_admin"]) {
+					echo "<td>";
+					echo "<a class=\"add\" title=\"Add\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE03B;</i></a>";
+					echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE254;</i></a>";
+					echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
+					echo "</td>";
+				}
+				echo "</tr>";
+			};
+			?>
 			</tbody>
 		</table>
 		<div class="div-map" style="display: none">
 			<div id="mapID" style="height: 500px" style="width: 100%"></div>
-			<script>
-				var locations = [
-						  ["LOCATION_1", 45.452, 4.381],
-						  ["LOCATION_2", 0, 0],
-						  //["LOCATION_3", 10.7202, 122.5621],
-						  //["LOCATION_4", 11.3889, 122.6277],
-						  //["LOCATION_5", 10.5929, 122.6325]
-						];
+			<script type='text/javascript'>
+				<?php
+					//this code passes the result of the mysql request in php to a javascript array
+					$php_array = [];
+					$query_mobilities ="SELECT location1, location2, name FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
+					$result_mobilities =  mysqli_query($link, $query_mobilities);
+					while ($row = mysqli_fetch_array($result_mobilities)) {
+						array_push($php_array, [ $row[name], floatval($row[location1]), floatval($row[location2]) ]);
+					};
+					$js_array = json_encode($php_array);
+					echo "var locations = ". $js_array . ";\n";
+				?>
 				
 				var mymap = L.map('mapID').setView([45.452, 4.381], 2);
 				
@@ -113,6 +153,6 @@ function viewMap() {
 	</div>
 </div>
 </div>
-
+<?php mysqli_close($link); ?>
 </body>
 </html>
