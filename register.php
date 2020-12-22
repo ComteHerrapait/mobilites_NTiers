@@ -135,17 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <style type="text/css">
-        body {
-            font: 14px sans-serif;
-        }
-
-        .wrapper {
-            width: 350px;
-            padding: 20px;
-        }
-    </style>
+    <link href="register.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -153,11 +143,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2>Sign Up</h2>
         <p>Please fill this form to create an account.</p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
-                <label>Username</label>
-                <input type="text" name="username" id="usrname" class="form-control" value="<?php echo $username; ?>" readonly="readonly">
-                <span class="help-block"><?php echo $username_err; ?></span>
-            </div>
             <div class="form-group <?php echo (!empty($fname_err)) ? 'has-error' : ''; ?>">
                 <label>Firstname</label>
                 <input type="text" name="firstname" id="fname" class="form-control" value="<?php echo $fname; ?>">
@@ -179,6 +164,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 fname.addEventListener('input', update_username);
                 lname.addEventListener('input', update_username);
             </script>
+            <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
+                <label>Username</label>
+                <input type="text" name="username" id="usrname" class="form-control" value="<?php echo $username; ?>" readonly="readonly">
+                <span class="help-block"><?php echo $username_err; ?></span>
+            </div>
             <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
                 <label>Mail</label>
                 <input type="mail" name="email" class="form-control" value="<?php echo $email; ?>">
@@ -210,7 +200,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-default" value="Reset">
             </div>
-            <p>Already have an account? <a href="login.php">Login here</a>.</p>
+            <p class ="message">Already have an account? <a href="login.php">Login here</a>.</p>
         </form>
     </div>
 </body>
