@@ -117,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>New Partner</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <link href="forms.css" rel="stylesheet" type="text/css">
     <style type="text/css">
         body {
             font: 14px sans-serif;
@@ -180,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-default" value="Reset">
             </div>
-            <p>Changed your mind? <a href="login.php">go back</a>.</p>
+            <p class ="message">Changed your mind? <a href="login.php">go back</a>.</p>
         </form>
     </div>
 </body>

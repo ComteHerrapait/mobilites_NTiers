@@ -96,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <link href="login.css" rel="stylesheet" type="text/css">
+    <link href="forms.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>

@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
-    <link href="register.css" rel="stylesheet" type="text/css">
+    <link href="forms.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
