@@ -1,0 +1,41 @@
+.wrap-all {
+    height: 100%;
+    overflow: hidden;
+}
+
+.barleft {
+    width: 15%;
+    float: left;
+    min-height: 100%;
+    position: fixed;
+}
+
+.barleft .btn {
+    display: block
+}
+
+.barleft .user-info {
+    margin: auto;
+}
+
+.bartop {
+    top: 0;
+    height: 15%;
+}
+
+.bartop h1 {
+    text-align: center;
+    display: block;
+}
+
+.main {
+    margin-left: 15%;
+    min-height: 100%;
+}
+
+.body {
+    color: #404E67;
+    background: #F5F7FA;
+    font-family: 'Open Sans', sans-serif;
+    height: 100%;
+}
