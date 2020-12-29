@@ -125,7 +125,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 				</div>
 			</div>
 			<div class="div-map" id="map" style="display: none">
-				<div id="mapID" style="height: 800px; width: 1500px">
+				<div id="mapID">
 					<!--map is here-->
 				</div>
 				<script type='text/javascript'>
@@ -141,7 +141,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 					echo "var locations = " . $js_array . ";\n";
 					?>
 
-					var mymap = L.map('mapID').setView([45.452, 4.381], 2);
+					var mymap = L.map('mapID').setView([20, 0], 3);
 
 					L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 						maxZoom: 18,
