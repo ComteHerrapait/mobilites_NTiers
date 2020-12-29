@@ -54,7 +54,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 <body>
 	<button type="button" class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
-	<!--These buttons are a temporary solution TODO:make something definitive-->
 	<button type="button" class="btn btn-info" onclick="window.location.href='new_mobility.php'">New Mobility</button>
 	<button type="button" class="btn btn-info" onclick="window.location.href='new_partner.php'">New Partner</button>
 
@@ -123,8 +122,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 						};
 						?>
 					</tbody>
-				</table>
-				<div class="div-map" style="display: none">
+                </table>
+                <div class="div-map" style="display: none">
 					<div id="mapID" style="height: 500px" style="width: 100%"></div>
 					<script type='text/javascript'>
 						<?php
