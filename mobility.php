@@ -71,33 +71,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo mysqli_stmt_error($stmt);
                 }
             }
-            echo "<script>alert(\"END\")</script>";
             mysqli_stmt_close($stmt);
             header("location: /");
             exit;
         } else if (isset($_POST['btn_delete'])) {
-            if ($_GET["id_edit"]) { // check if an edit id is specified
-                // Prepare delete statement
-                $sql = "DELETE FROM mobilities WHERE (mobility_i = ?);";
-
-                if ($stmt = mysqli_prepare($link, $sql)) {
-                    // Bind variables to the prepared statement as parameters
-                    mysqli_stmt_bind_param($stmt, "i", $temp);
-
-                    // set parameters
-                    $temp = $_GET["id_edit"];
-
-                    // Attempt to execute the prepared statement and react to errors
-                    if (!mysqli_stmt_execute($stmt)) {
-                        echo "Something went wrong. Please try again later.";
-                        echo "ERROR:\n";
-                        echo mysqli_stmt_errno($stmt);
-                        echo "ERROR:\n";
-                        echo mysqli_stmt_error($stmt);
-                    }
-                }
+            if ($_POST["id_edit_post"]) { // check if an edit id is specified
+                $temp = (int) $_POST["id_edit_post"];
+                $sql = "DELETE FROM mobilities WHERE (mobility_id = $temp);";
+                $deleted_row =  mysqli_query($link, $sql);
             }
-            mysqli_stmt_close($stmt);
             header("location: /");
             exit;
         } else if (isset($_POST['btn_edit'])) {
@@ -107,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         } else {
             // invalid
-            echo "<script>alert(\"ERROR : BUTTON NOT RECOGNISED\")</script>";
+            die('invalid button');
         }
     }
     // Close connection
@@ -148,8 +130,8 @@ if ($_GET["id_edit"]) {
 </head>
 <body>
     <div class="wrapper">
-        <h2><?php echo $_GET["id_edit"] ? 'Edit Mobility' : 'New Mobility' ?></h2>
-        <p><?php echo $_GET["id_edit"] ? 'Please edit this form to edit en existing mobility.' : 'Please fill this form to create a new mobility.' ?></p>
+        <h2><?php echo $_GET["id_edit"] ? "Edit Mobility n_" . $_GET['id_edit'] : 'New Mobility' ?></h2>
+        <p><?php echo $_GET["id_edit"] ? 'Please edit this form to edit an existing mobility.' : 'Please fill this form to create a new mobility.' ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($student_err)) ? 'has-error' : ''; ?>">
                 <label>Student</label>
@@ -200,12 +182,18 @@ if ($_GET["id_edit"]) {
                 <span class="help-block"><?php echo $date_stop_err; ?></span>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" name="btn_create" value="Create"/>
-                <input type="submit" class="btn btn-primary" name="btn_edit" value="Edit"/>
-                <input type="submit" class="btn btn-primary" name="btn_delete" value="Delete"/>
-                <input type="reset"  class="btn btn-default" name="btn_reset" value="Reset"/>
+                <?php 
+                if ($_GET["id_edit"]){
+                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit (WIP)\" />";
+                } else {
+                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_create\" value=\"Create\" />";
+                }
+                ?>
+                <input type="submit" class="btn btn-primary" name="btn_delete" value="Delete" />
+                <input type="reset" class="btn btn-default" name="btn_reset" value="Reset" />
             </div>
             <p class="message">Changed your mind? <a href="login.php">go back</a>.</p>
+            <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"];?>" />
         </form>
     </div>
 </body>

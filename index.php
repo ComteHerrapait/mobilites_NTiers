@@ -86,7 +86,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 									<th>Start Date</th>
 									<th>End Date</th>
 									<?php if ($_SESSION["is_admin"]) {
-										echo "<th>Actions</th>";
+										echo "<th>Edit</th>";
 									} ?>
 								</tr>
 							</thead>
@@ -112,7 +112,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 										echo "<td>";
 										$temp = $row['mobility_id'];
 										echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
-										echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
+										//echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
 										echo "</td>";
 									}
 									echo "</tr>";
