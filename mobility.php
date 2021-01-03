@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+error_log("start\n", 3, "/var/www/html/logs/php_errors.log");
 // Include config file
 require_once "config.php";
 
@@ -47,43 +48,73 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check input errors before inserting in database
     if (empty($student_err) && empty($destination_err) && empty($date_start_err) && empty($date_stop_err)) {
+        if (isset($_POST['btn_create'])) {
+            // Prepare an insert statement
+            $sql = "INSERT INTO mobilities (date_start, date_stop, partner_id, user_id) VALUES (?, ?, ?, ?)";
 
-        // Prepare an insert statement
-        $sql = "INSERT INTO mobilities (date_start, date_stop, partner_id, user_id) VALUES (?, ?, ?, ?)";
+            if ($stmt = mysqli_prepare($link, $sql)) {
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt, "ssss", $p_dstart, $p_dstop, $p_partner, $p_user);
 
-        if ($stmt = mysqli_prepare($link, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssss", $p_dstart, $p_dstop, $p_partner, $p_user);
+                // set parameters
+                $p_dstart = $date_start;
+                $p_dstop = $date_stop;
+                $p_partner = floatval($destination);
+                $p_user = floatval($student);
 
-            // set parameters
-            $p_dstart = $date_start;
-            $p_dstop = $date_stop;
-            $p_partner = floatval($destination);
-            $p_user = floatval($student);
-
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Redirect to login page
-                header("location: login.php");
-            } else {
-                echo "Something went wrong. Please try again later.";
-                echo "ERROR:\n";
-                echo mysqli_stmt_errno($stmt);
-                echo "ERROR:\n";
-                echo mysqli_stmt_error($stmt);
+                // Attempt to execute the prepared statement
+                if (!mysqli_stmt_execute($stmt)) {
+                    echo "Something went wrong. Please try again later.";
+                    echo "ERROR:\n";
+                    echo mysqli_stmt_errno($stmt);
+                    echo "ERROR:\n";
+                    echo mysqli_stmt_error($stmt);
+                }
             }
-
-            // Close statement
+            echo "<script>alert(\"END\")</script>";
             mysqli_stmt_close($stmt);
+            header("location: /");
+            exit;
+        } else if (isset($_POST['btn_delete'])) {
+            if ($_GET["id_edit"]) { // check if an edit id is specified
+                // Prepare delete statement
+                $sql = "DELETE FROM mobilities WHERE (mobility_i = ?);";
+
+                if ($stmt = mysqli_prepare($link, $sql)) {
+                    // Bind variables to the prepared statement as parameters
+                    mysqli_stmt_bind_param($stmt, "i", $temp);
+
+                    // set parameters
+                    $temp = $_GET["id_edit"];
+
+                    // Attempt to execute the prepared statement and react to errors
+                    if (!mysqli_stmt_execute($stmt)) {
+                        echo "Something went wrong. Please try again later.";
+                        echo "ERROR:\n";
+                        echo mysqli_stmt_errno($stmt);
+                        echo "ERROR:\n";
+                        echo mysqli_stmt_error($stmt);
+                    }
+                }
+            }
+            mysqli_stmt_close($stmt);
+            header("location: /");
+            exit;
+        } else if (isset($_POST['btn_edit'])) {
+            // TODO
+            error_log("button edit clicked\n", 3, "/var/www/html/logs/php_errors.log");
+            header("location : /");
+            exit;
+        } else {
+            // invalid
+            echo "<script>alert(\"ERROR : BUTTON NOT RECOGNISED\")</script>";
         }
     }
-
     // Close connection
     mysqli_close($link);
 }
 
 $user_id_edit = $partner_id_edit = $date_stop_edit = $date_start_edit = NULL;
-
 if ($_GET["id_edit"]) {
     //TODO : reject if user is not admin
     $id_edit = $_GET['id_edit'];
@@ -99,12 +130,10 @@ if ($_GET["id_edit"]) {
     mysqli_free_result($result_edit);
 }
 ?>
-
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title><?php echo $_GET["id_edit"]? 'Edit Mobility' : 'New Mobility'?></title>
+    <title><?php echo $_GET["id_edit"] ? 'Edit Mobility' : 'New Mobility' ?></title>
     <link href="forms.css" rel="stylesheet" type="text/css">
     <style type="text/css">
         body {
@@ -117,11 +146,10 @@ if ($_GET["id_edit"]) {
         }
     </style>
 </head>
-
 <body>
     <div class="wrapper">
-        <h2><?php echo $_GET["id_edit"]? 'Edit Mobility' : 'New Mobility'?></h2>
-        <p><?php echo $_GET["id_edit"]? 'Please edit this form to edit en existing mobility.' : 'Please fill this form to create a new mobility.'?></p>
+        <h2><?php echo $_GET["id_edit"] ? 'Edit Mobility' : 'New Mobility' ?></h2>
+        <p><?php echo $_GET["id_edit"] ? 'Please edit this form to edit en existing mobility.' : 'Please fill this form to create a new mobility.' ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($student_err)) ? 'has-error' : ''; ?>">
                 <label>Student</label>
@@ -163,17 +191,19 @@ if ($_GET["id_edit"]) {
             </div>
             <div class="form-group <?php echo (!empty($date_start_err)) ? 'has-error' : ''; ?>">
                 <label>Starting Date</label>
-                <input type="date" name="date_start" value=<?php echo is_null($date_start_edit) ? date("Y-m-d") : date($date_start_edit) ; ?>>
+                <input type="date" name="date_start" value=<?php echo is_null($date_start_edit) ? date("Y-m-d") : date($date_start_edit); ?>>
                 <span class="help-block"><?php echo $date_start_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($date_stop_err)) ? 'has-error' : ''; ?>">
                 <label>Ending Date</label>
-                <input type="date" name="date_stop" value=<?php echo is_null($date_stop_edit) ? date("Y-m-d") : date($date_stop_edit) ; ?>>
+                <input type="date" name="date_stop" value=<?php echo is_null($date_stop_edit) ? date("Y-m-d") : date($date_stop_edit); ?>>
                 <span class="help-block"><?php echo $date_stop_err; ?></span>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Submit">
-                <input type="reset" class="btn btn-default" value="Reset">
+                <input type="submit" class="btn btn-primary" name="btn_create" value="Create"/>
+                <input type="submit" class="btn btn-primary" name="btn_edit" value="Edit"/>
+                <input type="submit" class="btn btn-primary" name="btn_delete" value="Delete"/>
+                <input type="reset"  class="btn btn-default" name="btn_reset" value="Reset"/>
             </div>
             <p class="message">Changed your mind? <a href="login.php">go back</a>.</p>
         </form>
