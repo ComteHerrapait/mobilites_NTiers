@@ -84,7 +84,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         } else if (isset($_POST['btn_edit'])) {
             // TODO
-            error_log("button edit clicked\n", 3, "/var/www/html/logs/php_errors.log");
             header("location : /");
             exit;
         } else {
@@ -97,8 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $user_id_edit = $partner_id_edit = $date_stop_edit = $date_start_edit = NULL;
-if ($_GET["id_edit"]) {
-    //TODO : reject if user is not admin
+if ($_GET["id_edit"] && $_SESSION["is_admin"]) {
     $id_edit = $_GET['id_edit'];
     $query_edit = "SELECT user_id, partner_id, date_start, date_stop FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id) WHERE mobility_id = $id_edit;";
     $result_edit =  mysqli_query($link, $query_edit);
@@ -110,9 +108,16 @@ if ($_GET["id_edit"]) {
     $date_start_edit = $row_edit['date_start'];
 
     mysqli_free_result($result_edit);
+} else if ($_GET["id_edit"] && !$_SESSION["is_admin"]) {
+    //reject attempt if user is not admin and tries to edit a mobility
+    echo "<script>alert(\"YOU ARE NOT ADMIN.\ncontact website administrator for further information\")</script>";
+    
+    header("location : login.php");
+    exit;
 }
 ?>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title><?php echo $_GET["id_edit"] ? 'Edit Mobility' : 'New Mobility' ?></title>
@@ -128,6 +133,7 @@ if ($_GET["id_edit"]) {
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <h2><?php echo $_GET["id_edit"] ? "Edit Mobility n_" . $_GET['id_edit'] : 'New Mobility' ?></h2>
@@ -182,8 +188,8 @@ if ($_GET["id_edit"]) {
                 <span class="help-block"><?php echo $date_stop_err; ?></span>
             </div>
             <div class="form-group">
-                <?php 
-                if ($_GET["id_edit"]){
+                <?php
+                if ($_GET["id_edit"]) {
                     echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit (WIP)\" />";
                 } else {
                     echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_create\" value=\"Create\" />";
@@ -193,7 +199,7 @@ if ($_GET["id_edit"]) {
                 <input type="reset" class="btn btn-default" name="btn_reset" value="Reset" />
             </div>
             <p class="message">Changed your mind? <a href="login.php">go back</a>.</p>
-            <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"];?>" />
+            <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"]; ?>" />
         </form>
     </div>
 </body>
