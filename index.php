@@ -64,8 +64,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 			</div>
 			<button type="button" class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
 			<button type="button" class="btn btn-info view-map" id="btn-map" onclick="viewMap()">View Map</button>
-			<button type="button" class="btn btn-info" onclick="window.location.href='new_mobility.php'">New Mobility</button>
-			<button type="button" class="btn btn-info" onclick="window.location.href='new_partner.php'">New Partner</button>
+			<button type="button" class="btn btn-info" onclick="window.location.href='mobility.php'">New Mobility</button>
+			<button type="button" class="btn btn-info" onclick="window.location.href='partner.php'">New Partner</button>
 		</div>
 		<div class="bartop">
 			<h1>Student Mobilities</h1>
@@ -94,7 +94,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 								<!-- get mobilities from Database -->
 								<?php
 								//query
-								$query_mobilities = "SELECT firstname, lastname, promotion, country, city, date_start, date_stop, location1, location2, name FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
+								$query_mobilities = "SELECT mobility_id, firstname, lastname, promotion, country, city, date_start, date_stop, location1, location2, name FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
 								$result_mobilities =  mysqli_query($link, $query_mobilities);
 								//$num = mysqli_num_rows($result_mobilities);//number of rows from the query
 
@@ -110,8 +110,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 									echo "<td>" . $row['date_stop'] . "</td>";
 									if ($_SESSION["is_admin"]) {
 										echo "<td>";
-										echo "<a class=\"add\" title=\"Add\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE03B;</i></a>";
-										echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE254;</i></a>";
+										$temp = $row['mobility_id'];
+										echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
 										echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
 										echo "</td>";
 									}

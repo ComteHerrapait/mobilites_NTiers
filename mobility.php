@@ -32,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // validate dates
+    //TODO : check if dates are in right order
     if (empty($_POST["date_start"])) {
         $date_start_err = "Please enter a date.";
     } else {
@@ -80,13 +81,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Close connection
     mysqli_close($link);
 }
+
+$user_id_edit = $partner_id_edit = $date_stop_edit = $date_start_edit = NULL;
+
+if ($_GET["id_edit"]) {
+    //TODO : reject if user is not admin
+    $id_edit = $_GET['id_edit'];
+    $query_edit = "SELECT user_id, partner_id, date_start, date_stop FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id) WHERE mobility_id = $id_edit;";
+    $result_edit =  mysqli_query($link, $query_edit);
+    $row_edit = mysqli_fetch_array($result_edit);
+
+    $user_id_edit = $row_edit['user_id'];
+    $partner_id_edit = $row_edit['partner_id'];
+    $date_stop_edit = $row_edit['date_stop'];
+    $date_start_edit = $row_edit['date_start'];
+
+    mysqli_free_result($result_edit);
+}
 ?>
 
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>New Mobility</title>
+    <title><?php echo $_GET["id_edit"]? 'Edit Mobility' : 'New Mobility'?></title>
     <link href="forms.css" rel="stylesheet" type="text/css">
     <style type="text/css">
         body {
@@ -102,8 +120,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <div class="wrapper">
-        <h2>New Mobility</h2>
-        <p>Please fill this form to create a new mobility.</p>
+        <h2><?php echo $_GET["id_edit"]? 'Edit Mobility' : 'New Mobility'?></h2>
+        <p><?php echo $_GET["id_edit"]? 'Please edit this form to edit en existing mobility.' : 'Please fill this form to create a new mobility.'?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($student_err)) ? 'has-error' : ''; ?>">
                 <label>Student</label>
@@ -118,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $stmt->execute();
                         $stmt->bind_result($user_id, $username);
                         while ($stmt->fetch()) {
-                            echo "<option value=\"$user_id\">$username</option>";
+                            echo "<option " . ($user_id == $user_id_edit ? 'selected' : '') . " value=\"$user_id\">$username</option>\n";
                         }
                         $stmt->close();
                     }
@@ -135,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $stmt->execute();
                         $stmt->bind_result($partner_id, $name, $city, $country);
                         while ($stmt->fetch()) {
-                            echo "<option value=\"$partner_id\">$name ($city,$country)</option>";
+                            echo "<option " . ($partner_id == $partner_id_edit ? 'selected' : '') . " value=\"$partner_id\">$name ($city,$country)</option>\n";
                         }
                         $stmt->close();
                     }
@@ -145,19 +163,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="form-group <?php echo (!empty($date_start_err)) ? 'has-error' : ''; ?>">
                 <label>Starting Date</label>
-                <input type="date" name="date_start" value=<?php echo date("Y-m-d"); ?>>
+                <input type="date" name="date_start" value=<?php echo is_null($date_start_edit) ? date("Y-m-d") : date($date_start_edit) ; ?>>
                 <span class="help-block"><?php echo $date_start_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($date_stop_err)) ? 'has-error' : ''; ?>">
                 <label>Ending Date</label>
-                <input type="date" name="date_stop" value=<?php echo date("Y-m-d"); ?>>
+                <input type="date" name="date_stop" value=<?php echo is_null($date_stop_edit) ? date("Y-m-d") : date($date_stop_edit) ; ?>>
                 <span class="help-block"><?php echo $date_stop_err; ?></span>
             </div>
             <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-default" value="Reset">
             </div>
-            <p class ="message">Changed your mind? <a href="login.php">go back</a>.</p>
+            <p class="message">Changed your mind? <a href="login.php">go back</a>.</p>
         </form>
     </div>
 </body>
