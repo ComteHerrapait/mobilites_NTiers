@@ -37,6 +37,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 	<script type="text/javascript" src="script.js"></script>
 	<script language="javascript">
 		function viewMap() {
+			//TODO : select which table to show
 			if (document.getElementById("table").style.display != "none") {
 				document.getElementById("map").style.display = "block";
 				setTimeout(function() {
@@ -68,13 +69,14 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 			<button type="button" class="btn btn-info" onclick="window.location.href='partner.php'">New Partner</button>
 		</div>
 		<div class="bartop">
-			<h1>Student Mobilities</h1>
+			<h1>Student Mobilities in Telecom Saint Etienne</h1>
 		</div>
 		<div class="main">
 			<div class="container-lg">
 				<div class="table-responsive" id="table" style="display: block">
 					<div class="table-wrapper">
-						<table class="table table-bordered">
+						<table class="table table-bordered" id="table-mobility">
+							<h1>Mobilities</h1>
 							<thead>
 								<!-- header for the table -->
 								<tr>
@@ -120,7 +122,92 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 								?>
 							</tbody>
 						</table>
+						<table class="table table-bordered" id="table-users">
+							<h1>Users</h1>
+							<thead>
+								<tr>
+									<th>First Name</th>
+									<th>Last Name</th>
+									<th>Promotion</th>
+									<th>comment</th>
+									<th>admin</th>
+									<th>created</th>
+									<th>email</th>
+									<?php if ($_SESSION["is_admin"]) {
+										echo "<th>Edit</th>";
+									} ?>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- get users from Database -->
+								<?php
+								//query
+								$query_users = "SELECT firstname, lastname, promotion, email, comment, admin, created_at FROM users;";
+								$result_users =  mysqli_query($link, $query_users);
 
+								//display in table
+								while ($row = mysqli_fetch_array($result_users)) {
+									echo "<tr>";
+									echo "<td>" . $row['firstname'] . "</td>";
+									echo "<td>" . $row['lastname'] . "</td>";
+									echo "<td>" . $row['promotion'] . "</td>";
+									echo "<td>" . $row['comment'] . "</td>";
+									echo "<td>" . $row['admin'] . "</td>";
+									echo "<td>" . $row['created_at'] . "</td>";
+									echo "<td>" . $row['email'] . "</td>";
+									if ($_SESSION["is_admin"]) {
+										echo "<td>";
+										//$temp = $row['mobility_id'];
+										//echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
+										//echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
+										echo "</td>";
+									}
+									echo "</tr>";
+								};
+								?>
+							</tbody>
+						</table>
+						<table class="table table-bordered" id="table-partners">
+							<h1>Partners</h1>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Country</th>
+									<th>City</th>
+									<th>location X</th>
+									<th>location Y</th>
+									<?php if ($_SESSION["is_admin"]) {
+										echo "<th>Edit</th>";
+									} ?>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- get partners from Database -->
+								<?php
+								//query
+								$query_partners = "SELECT name, location1, location2, country, city FROM partners;";
+								$result_partners =  mysqli_query($link, $query_partners);
+
+								//display in table
+								while ($row = mysqli_fetch_array($result_partners)) {
+									echo "<tr>";
+									echo "<td>" . $row['name'] . "</td>";
+									echo "<td>" . $row['country'] . "</td>";
+									echo "<td>" . $row['city'] . "</td>";
+									echo "<td>" . $row['location1'] . "</td>";
+									echo "<td>" . $row['location2'] . "</td>";
+									if ($_SESSION["is_admin"]) {
+										echo "<td>";
+										//$temp = $row['mobility_id'];
+										//echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
+										//echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
+										echo "</td>";
+									}
+									echo "</tr>";
+								};
+								?>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
