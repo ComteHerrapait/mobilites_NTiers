@@ -35,6 +35,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 	<link href="table.css" rel="stylesheet" type="text/css">
 	<link href="index.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript" src="script.js"></script>
+	<script type="text/javascript" src="map.js"></script>
+	<script type="text/javascript" src="search.js"></script>
 	<script language="javascript">
 		function viewMap() {
 			//TODO : select which table to show
@@ -225,16 +227,27 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 					<?php
 					//this code passes the result of the mysql request in php to a javascript array
 					$php_array = [];
-					$query_mobilities = "SELECT location1, location2, name FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
+					$query_mobilities = "SELECT location1, location2, name, firstname, lastname, partner_id, city, country FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
 					$result_mobilities =  mysqli_query($link, $query_mobilities);
 					while ($row = mysqli_fetch_array($result_mobilities)) {
-						array_push($php_array, [$row['name'], floatval($row['location1']), floatval($row['location2'])]);
+						$loc = [
+							$row['name'], //0
+							floatval($row['location1']), //1
+							floatval($row['location2']), //2
+							$row['firstname'], //3
+							$row['lastname'], //4
+							$row['partner_id'], //5
+							$row['city'], //6
+							$row['country'] //7
+						];
+						array_push($php_array, $loc);
 					};
 					$js_array = json_encode($php_array);
-					echo "var locations = " . $js_array . ";\n";
+					echo "var mobilities = " . $js_array . ";\n";
 					?>
-
 					var mymap = L.map('mapID').setView([20, 0], 3);
+					var map_markers = new MapMarkers(mobilities);
+					console.log(map_markers);
 
 					L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 						maxZoom: 18,
@@ -246,12 +259,11 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 						zoomOffset: -1
 					}).addTo(mymap);
 
-
-					for (var i = 0; i < locations.length; i++) {
-						marker = new L.marker([locations[i][1], locations[i][2]])
-							.bindPopup(locations[i][0])
+					map_markers.partners.forEach(function(p) {
+						marker = new L.marker(p.getLngLat())
+							.bindPopup(p.getPopupText())
 							.addTo(mymap);
-					}
+					});
 				</script>
 			</div>
 
