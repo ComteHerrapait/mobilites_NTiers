@@ -34,6 +34,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 	<!-- customs -->
 	<link href="table.css" rel="stylesheet" type="text/css">
 	<link href="index.css" rel="stylesheet" type="text/css">
+	<link href="map.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript" src="script.js"></script>
 	<script type="text/javascript" src="map.js"></script>
 	<script type="text/javascript" src="search.js"></script>
@@ -247,7 +248,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 					?>
 					var mymap = L.map('mapID').setView([20, 0], 3);
 					var map_markers = new MapMarkers(mobilities);
-					console.log(map_markers);
 
 					L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 						maxZoom: 18,

@@ -1,0 +1,38 @@
+/* Marker tweaks */
+
+.leaflet-popup-close-button {
+    display: none;
+}
+
+.leaflet-popup-content {
+    font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+    padding: 0;
+    width: 200px;
+}
+
+.leaflet-popup-content-wrapper {
+    padding: 0;
+}
+
+.leaflet-popup-content {
+    margin: auto auto;
+    border-radius: 15px 15px 0 0;
+}
+
+.leaflet-popup-content h3 {
+    background: #3a44d4;
+    color: #fff;
+    margin: 0;
+    display: block;
+    padding: 10px;
+    border-radius: 15px 15px 0 0;
+    font-weight: 700;
+}
+
+.leaflet-popup-content div {
+    padding: 10px;
+}
+
+.leaflet-container .leaflet-marker-icon {
+    cursor: pointer;
+}

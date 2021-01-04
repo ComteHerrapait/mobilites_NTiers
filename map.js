@@ -15,12 +15,12 @@ class Partner {
         return [this.loc_X, this.loc_Y];
     }
     getPopupText() {
-        let str = `<h3>${this.name}</h3><h5>${this.city}, ${this.country}</h5>`;
+        let str = `<h3>${this.name}</h3><div>${this.city}, ${this.country}`;
         str += "<ul>";
         this.students.forEach(function(s) {
             str += `<li>${s.lname}, ${s.fname}</li>`;
         });
-        str += "</ul>";
+        str += "</ul></div>";
         return str;
     }
 };
