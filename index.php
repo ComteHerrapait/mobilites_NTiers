@@ -77,6 +77,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 			<h1>Student Mobilities in Telecom Saint Etienne</h1>
 		</div>
 		<div class="main">
+			<input type="search" id="search-bar" placeholder="filter results" onkeyup="simpleSearch()" size="16">
 			<div class="container-lg">
 				<div class="table-responsive" id="table" style="display: block">
 					<div class="table-wrapper">
