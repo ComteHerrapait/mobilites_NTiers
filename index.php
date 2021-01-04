@@ -67,6 +67,11 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 			<button type="button" class="btn btn-info view-map" id="btn-map" onclick="viewMap()">View Map</button>
 			<button type="button" class="btn btn-info" onclick="window.location.href='mobility.php'">New Mobility</button>
 			<button type="button" class="btn btn-info" onclick="window.location.href='partner.php'">New Partner</button>
+			<?php
+			if ($_SESSION['is_admin']) {
+				echo "<button type=\"button\" class=\"btn btn-info\" onclick=\"window.location.href='user.php'\">New User</button>";
+			}
+			?>
 		</div>
 		<div class="bartop">
 			<h1>Student Mobilities in Telecom Saint Etienne</h1>

@@ -64,11 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Attempt to execute the prepared statement
                 if (!mysqli_stmt_execute($stmt)) {
-                    echo "Something went wrong. Please try again later.";
-                    echo "ERROR:\n";
-                    echo mysqli_stmt_errno($stmt);
-                    echo "ERROR:\n";
-                    echo mysqli_stmt_error($stmt);
+                    die("ERROR PROCESSING UPDATE QUERY : \n" . mysqli_stmt_errno($stmt) . "\n" . mysqli_stmt_error($stmt));
                 }
             }
             mysqli_stmt_close($stmt);
@@ -83,8 +79,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("location: /");
             exit;
         } else if (isset($_POST['btn_edit'])) {
-            // TODO
-            header("location : /");
+            if ($_POST["id_edit_post"]) { // check if an edit id is specified
+                $sql = "UPDATE mobilities SET date_start=?, date_stop=?, partner_id=?, user_id=? WHERE (mobility_id = ?);";
+                //$deleted_row =  mysqli_query($link, $sql);
+                if ($stmt = mysqli_prepare($link, $sql)) {
+                    // Bind variables to the prepared statement as parameters
+                    mysqli_stmt_bind_param($stmt, "ssiii", $p_dstart, $p_dstop, $p_partner, $p_user, $p_edit_id);
+
+                    // set parameters
+                    $p_dstart = $date_start;
+                    $p_dstop = $date_stop;
+                    $p_partner = intval($destination);
+                    $p_user = intval($student);
+                    $p_edit_id = (int) $_POST["id_edit_post"];
+
+                    // Attempt to execute the prepared statement
+                    if (!mysqli_stmt_execute($stmt)) {
+                        die("ERROR PROCESSING UPDATE QUERY : \n" . mysqli_stmt_errno($stmt) . "\n" . mysqli_stmt_error($stmt));
+                    }
+                }
+            }
+            mysqli_stmt_close($stmt);
+            header("location: /");
             exit;
         } else {
             // invalid
@@ -92,6 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
     // Close connection
+    die("CLOSE CON");
     mysqli_close($link);
 }
 
@@ -111,7 +128,7 @@ if ($_GET["id_edit"] && $_SESSION["is_admin"]) {
 } else if ($_GET["id_edit"] && !$_SESSION["is_admin"]) {
     //reject attempt if user is not admin and tries to edit a mobility
     echo "<script>alert(\"YOU ARE NOT ADMIN.\ncontact website administrator for further information\")</script>";
-    
+
     header("location : login.php");
     exit;
 }
@@ -199,7 +216,8 @@ if ($_GET["id_edit"] && $_SESSION["is_admin"]) {
                 <input type="reset" class="btn btn-default" name="btn_reset" value="Reset" />
             </div>
             <p class="message">Changed your mind? <a href="login.php">go back</a>.</p>
-            <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"]; ?>" />
+            <!-- hidden input to pass the mobility ID from GET to POST -->
+            <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"]; ?>" /> 
         </form>
     </div>
 </body>
