@@ -151,7 +151,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 								<!-- get users from Database -->
 								<?php
 								//query
-								$query_users = "SELECT firstname, lastname, promotion, email, comment, admin, created_at FROM users;";
+								$query_users = "SELECT user_id, firstname, lastname, promotion, email, comment, admin, created_at FROM users;";
 								$result_users =  mysqli_query($link, $query_users);
 
 								//display in table
@@ -166,8 +166,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 									echo "<td>" . $row['email'] . "</td>";
 									if ($_SESSION["is_admin"]) {
 										echo "<td>";
-										//$temp = $row['mobility_id'];
-										//echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
+										$temp = $row['user_id'];
+										echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\" href=\"/user.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
 										//echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
 										echo "</td>";
 									}

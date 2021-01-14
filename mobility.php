@@ -13,6 +13,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
+// Define variables and initialize with empty values
 $student = $destination = $date_start = $date_stop = "";
 $student_err = $destination_err = $date_start_err = $date_stop_err = "";
 
@@ -113,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $user_id_edit = $partner_id_edit = $date_stop_edit = $date_start_edit = NULL;
-if ($_GET["id_edit"] && $_SESSION["is_admin"]) {
+if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
     $id_edit = $_GET['id_edit'];
     $query_edit = "SELECT user_id, partner_id, date_start, date_stop FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id) WHERE mobility_id = $id_edit;";
     $result_edit =  mysqli_query($link, $query_edit);
@@ -125,11 +126,11 @@ if ($_GET["id_edit"] && $_SESSION["is_admin"]) {
     $date_start_edit = $row_edit['date_start'];
 
     mysqli_free_result($result_edit);
-} else if ($_GET["id_edit"] && !$_SESSION["is_admin"]) {
+} else if (isset($_GET["id_edit"]) && !$_SESSION["is_admin"]) {
     //reject attempt if user is not admin and tries to edit a mobility
     echo "<script>alert(\"YOU ARE NOT ADMIN.\ncontact website administrator for further information\")</script>";
 
-    header("location : login.php");
+    header("location: login.php");
     exit;
 }
 ?>
@@ -137,7 +138,7 @@ if ($_GET["id_edit"] && $_SESSION["is_admin"]) {
 
 <head>
     <meta charset="UTF-8">
-    <title><?php echo $_GET["id_edit"] ? 'Edit Mobility' : 'New Mobility' ?></title>
+    <title><?php echo isset($_GET["id_edit"]) ? 'Edit Mobility' : 'New Mobility' ?></title>
     <link href="forms.css" rel="stylesheet" type="text/css">
     <style type="text/css">
         body {
@@ -153,8 +154,8 @@ if ($_GET["id_edit"] && $_SESSION["is_admin"]) {
 
 <body>
     <div class="wrapper">
-        <h2><?php echo $_GET["id_edit"] ? "Edit Mobility n_" . $_GET['id_edit'] : 'New Mobility' ?></h2>
-        <p><?php echo $_GET["id_edit"] ? 'Please edit this form to edit an existing mobility.' : 'Please fill this form to create a new mobility.' ?></p>
+        <h2><?php echo isset($_GET["id_edit"]) ? "Edit Mobility n_" . $_GET['id_edit'] : 'New Mobility' ?></h2>
+        <p><?php echo isset($_GET["id_edit"]) ? 'Please edit this form to edit an existing mobility.' : 'Please fill this form to create a new mobility.' ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($student_err)) ? 'has-error' : ''; ?>">
                 <label>Student</label>
@@ -196,12 +197,12 @@ if ($_GET["id_edit"] && $_SESSION["is_admin"]) {
             </div>
             <div class="form-group <?php echo (!empty($date_start_err)) ? 'has-error' : ''; ?>">
                 <label>Starting Date</label>
-                <input type="date" name="date_start" value=<?php echo is_null($date_start_edit) ? date("Y-m-d") : date($date_start_edit); ?>>
+                <input type="date" name="date_start" class="form-control" value=<?php echo is_null($date_start_edit) ? date("Y-m-d") : date($date_start_edit); ?>>
                 <span class="help-block"><?php echo $date_start_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($date_stop_err)) ? 'has-error' : ''; ?>">
                 <label>Ending Date</label>
-                <input type="date" name="date_stop" value=<?php echo is_null($date_stop_edit) ? date("Y-m-d") : date($date_stop_edit); ?>>
+                <input type="date" name="date_stop" class="form-control" value=<?php echo is_null($date_stop_edit) ? date("Y-m-d") : date($date_stop_edit); ?>>
                 <span class="help-block"><?php echo $date_stop_err; ?></span>
             </div>
             <div class="form-group">

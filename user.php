@@ -2,6 +2,15 @@
 // Include config file
 require_once "config.php";
 
+// Initialize the session
+session_start();
+
+// Check if the user is logged in, if not then redirect him to login page
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+    header("location: login.php");
+    exit;
+}
+
 // Define variables and initialize with empty values
 $username = $password = $confirm_password = $fname = $lname = $promotion = $email = "";
 $username_err = $password_err = $confirm_password_err = $fname_err = $lname_err = $promo_err = $email_err = "";
@@ -91,41 +100,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check input errors before inserting in database
     if (empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($first_name_err) && empty($last_name_err) && empty($promo_err) && empty($email_err)) {
+        if (isset($_POST['btn_create'])) {
+            // Prepare an insert statement
+            $sql = "INSERT INTO users (username, password, promotion, firstname, lastname, email) VALUES (?, ?, ?, ?, ?, ?)";
 
-        // Prepare an insert statement
-        $sql = "INSERT INTO users (username, password, promotion, firstname, lastname, email) VALUES (?, ?, ?, ?, ?, ?)";
+            if ($stmt = mysqli_prepare($link, $sql)) {
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt, "ssssss", $param_username, $param_password, $param_promo, $param_fname, $param_lname, $param_email);
 
-        if ($stmt = mysqli_prepare($link, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssss", $param_username, $param_password, $param_promo, $param_fname, $param_lname, $param_email);
+                // Set parameters
+                $param_username = $username;
+                $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+                $param_promo = $promotion;
+                $param_fname = $fname;
+                $param_lname = $lname;
+                $param_email = $email;
 
-            // Set parameters
-            $param_username = $username;
-            $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
-            $param_promo = $promotion;
-            $param_fname = $fname;
-            $param_lname = $lname;
-            $param_email = $email;
+                // Attempt to execute the prepared statement
+                if (!mysqli_stmt_execute($stmt)) {
+                    die("ERROR PROCESSING UPDATE QUERY : \n" . mysqli_stmt_errno($stmt) . "\n" . mysqli_stmt_error($stmt));
+                }
 
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Redirect to login page
-                header("location: login.php");
-            } else {
-                echo "Something went wrong. Please try again later.";
-                echo "ERROR:\n";
-                echo mysqli_stmt_errno($stmt);
-                echo "ERROR:\n";
-                echo mysqli_stmt_error($stmt);
+                // Close statement
+                mysqli_stmt_close($stmt);
             }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
+        } else if (isset($_POST['btn_delete'])) {
+            // TODO
+        } else if (isset($_POST['btn_edit'])) {
+            // TODO
         }
     }
 
     // Close connection
     mysqli_close($link);
+}
+$fname_edit = $lname_edit = $mail_edit = $promotion_edit = $password_edit = NULL;
+if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
+    $id_edit = $_GET['id_edit'];
+    $query_edit = "SELECT * FROM users WHERE user_id = $id_edit;";
+    $result_edit =  mysqli_query($link, $query_edit);
+    $row_edit = mysqli_fetch_array($result_edit);
+
+    $fname_edit = $row_edit["firstname"];
+    $lname_edit = $row_edit["lastname"];
+    $mail_edit = $row_edit["email"];
+    $promotion_edit = $row_edit["promotion"];
+    $password_edit = $row_edit["password"];
+
+    mysqli_free_result($result_edit);
+} else if (isset($_GET["id_edit"]) && !$_SESSION["is_admin"]) {
+    //reject attempt if user is not admin and tries to edit a mobility
+    echo "<script>alert(\"YOU ARE NOT ADMIN.\ncontact website administrator for further information\")</script>";
+    header("location: login.php");
+    exit;
 }
 ?>
 
@@ -138,19 +165,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="forms.css" rel="stylesheet" type="text/css">
 </head>
 
-<body>
+<body onLoad="update_username()">
     <div class="wrapper">
-        <h2>Sign Up</h2>
-        <p>Please fill this form to create an account.</p>
+        <h2><?php echo isset($_GET["id_edit"]) ? "Edit User n_" . $_GET['id_edit'] : 'New User' ?></h2>
+        <p><?php echo isset($_GET["id_edit"]) ? 'Please edit this form to edit an existing user.' : 'Please fill this form to create a new user.' ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($fname_err)) ? 'has-error' : ''; ?>">
                 <label>Firstname</label>
-                <input type="text" name="firstname" id="fname" class="form-control" value="<?php echo $fname; ?>">
+                <input type="text" name="firstname" id="fname" class="form-control" value=<?php echo is_null($fname_edit)? "" : "$fname_edit";?>>
                 <span class="help-block"><?php echo $fname_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($lname_err)) ? 'has-error' : ''; ?>">
                 <label>Lastname</label>
-                <input type="text" name="lastname" id="lname" class="form-control" value="<?php echo $lname; ?>">
+                <input type="text" name="lastname" id="lname" class="form-control" value=<?php echo is_null($lname_edit)? "" : "$lname_edit"; ?>>
                 <span class="help-block"><?php echo $lname_err; ?></span>
             </div>
             <script>
@@ -171,7 +198,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
                 <label>Mail</label>
-                <input type="mail" name="email" class="form-control" value="<?php echo $email; ?>">
+                <input type="mail" name="email" class="form-control" value=<?php echo is_null($mail_edit)? "" : "$mail_edit"; ?>>
                 <span class="help-block"><?php echo $email_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($promo_err)) ? 'has-error' : ''; ?>">
@@ -197,10 +224,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <span class="help-block"><?php echo $confirm_password_err; ?></span>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Submit">
-                <input type="reset" class="btn btn-default" value="Reset">
+                <?php
+                if (isset($_GET["id_edit"])) {
+                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit (WIP)\" />";
+                } else {
+                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_create\" value=\"Create\" />";
+                }
+                ?>
+                <input type="submit" class="btn btn-primary" name="btn_delete" value="Delete" />
+                <input type="reset" class="btn btn-default" name="btn_reset" value="Reset" />
             </div>
-            <p class ="message">Already have an account? <a href="login.php">Login here</a>.</p>
+            <p class="message">Changed your mind ? <a href="/">go back</a>.</p>
+            <!-- hidden input to pass the mobility ID from GET to POST -->
+            <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"]; ?>" />
         </form>
     </div>
 </body>
