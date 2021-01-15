@@ -109,7 +109,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check input errors before inserting in database
     if (empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($first_name_err) && empty($last_name_err) && empty($promo_err) && empty($email_err)) {
         if (isset($_POST['btn_create'])) {
-            die("CREATE");
             // Prepare an insert statement
             $sql = "INSERT INTO users (username, password, promotion, firstname, lastname, email) VALUES (?, ?, ?, ?, ?, ?)";
             if ($stmt = mysqli_prepare($link, $sql)) {
@@ -133,7 +132,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 mysqli_stmt_close($stmt);
             }
         } else if (isset($_POST['btn_delete'])) {
-            // TODO
+            if (isset($_POST["id_edit_post"])) { // check if an edit id is specified
+                $temp = (int) $_POST["id_edit_post"];
+                $sql = "DELETE FROM users WHERE (user_id = $temp);";
+                $deleted_row =  mysqli_query($link, $sql);
+            }
+            header("location: /");
+            exit;
         } else if (isset($_POST['btn_edit'])) {
             // TODO : change password and comment
             if (isset($_POST["id_edit_post"])) {
