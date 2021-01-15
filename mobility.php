@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("location: /");
             exit;
         } else if (isset($_POST['btn_delete'])) {
-            if ($_POST["id_edit_post"]) { // check if an edit id is specified
+            if (isset($_POST["id_edit_post"])) { // check if an edit id is specified
                 $temp = (int) $_POST["id_edit_post"];
                 $sql = "DELETE FROM mobilities WHERE (mobility_id = $temp);";
                 $deleted_row =  mysqli_query($link, $sql);
@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("location: /");
             exit;
         } else if (isset($_POST['btn_edit'])) {
-            if ($_POST["id_edit_post"]) { // check if an edit id is specified
+            if (isset($_POST["id_edit_post"])) { // check if an edit id is specified
                 $sql = "UPDATE mobilities SET date_start=?, date_stop=?, partner_id=?, user_id=? WHERE (mobility_id = ?);";
                 //$deleted_row =  mysqli_query($link, $sql);
                 if ($stmt = mysqli_prepare($link, $sql)) {
@@ -208,7 +208,7 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
             <div class="form-group">
                 <?php
                 if ($_GET["id_edit"]) {
-                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit (WIP)\" />";
+                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit\" />";
                 } else {
                     echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_create\" value=\"Create\" />";
                 }

@@ -12,16 +12,17 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 }
 
 // Define variables and initialize with empty values
-$username = $password = $confirm_password = $fname = $lname = $promotion = $email = "";
+$username = $password = $confirm_password = $fname = $lname = $promotion = $email = $is_admin_post = "";
 $username_err = $password_err = $confirm_password_err = $fname_err = $lname_err = $promo_err = $email_err = "";
 
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     // Validate username
     if (empty($_POST["username"])) {
         $username_err = "Please enter a username.";
-    } else {
+    } else if (isset($_POST['btn_create'])) {
+        //check if username exists when creating new user
+
         // Prepare a select statement
         $sql = "SELECT user_id FROM users WHERE username = ?";
 
@@ -49,25 +50,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Close statement
             mysqli_stmt_close($stmt);
         }
+    } else if (isset($_POST['btn_edit'])){
+        $username = trim($_POST["username"]);
     }
 
-    // Validate password
-    if (empty($_POST["password"])) {
-        $password_err = "Please enter a password.";
-    } elseif (strlen(trim($_POST["password"])) < 6) {
-        $password_err = "Password must have atleast 6 characters.";
-    } else {
-        $password = trim($_POST["password"]);
-    }
-
-    // Validate confirm password
-    if (empty($_POST["confirm_password"])) {
-        $confirm_password_err = "Please confirm password.";
-    } else {
-        $confirm_password = trim($_POST["confirm_password"]);
-        if (empty($password_err) && ($password != $confirm_password)) {
-            $confirm_password_err = "Password did not match.";
+    // Do not validate password in edit mode, check if an id to edit has been passed in POST
+    if (!isset($_POST["id_edit_post"])) {
+        // Validate password
+        if (empty($_POST["password"])) {
+            $password_err = "Please enter a password.";
+        } elseif (strlen(trim($_POST["password"])) < 6) {
+            $password_err = "Password must have atleast 6 characters.";
+        } else {
+            $password = trim($_POST["password"]);
         }
+
+        // Validate confirm password
+        if (empty($_POST["confirm_password"])) {
+            $confirm_password_err = "Please confirm password.";
+        } else {
+            $confirm_password = trim($_POST["confirm_password"]);
+            if (empty($password_err) && ($password != $confirm_password)) {
+                $confirm_password_err = "Password did not match.";
+            }
+        }
+    } else {
+        $is_admin_post = isset($_POST['is_admin']);
     }
 
     // validate promotion
@@ -101,9 +109,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check input errors before inserting in database
     if (empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($first_name_err) && empty($last_name_err) && empty($promo_err) && empty($email_err)) {
         if (isset($_POST['btn_create'])) {
+            die("CREATE");
             // Prepare an insert statement
             $sql = "INSERT INTO users (username, password, promotion, firstname, lastname, email) VALUES (?, ?, ?, ?, ?, ?)";
-
             if ($stmt = mysqli_prepare($link, $sql)) {
                 // Bind variables to the prepared statement as parameters
                 mysqli_stmt_bind_param($stmt, "ssssss", $param_username, $param_password, $param_promo, $param_fname, $param_lname, $param_email);
@@ -127,14 +135,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else if (isset($_POST['btn_delete'])) {
             // TODO
         } else if (isset($_POST['btn_edit'])) {
-            // TODO
+            // TODO : change password and comment
+            if (isset($_POST["id_edit_post"])) {
+                $sql = "UPDATE users SET username=?, admin=?, promotion=?, firstname=?, lastname=?, email=?, comment=? WHERE (user_id=?);";
+                if ($stmt = mysqli_prepare($link, $sql)) {
+                    // Bind variables to the prepared statement as parameters
+                    mysqli_stmt_bind_param($stmt, "sisssssi", $p_usrname, $p_admin, $p_promo, $p_fname, $p_lname, $p_mail, $p_comment, $p_edit_id );
+
+                    // set parameters
+                    $p_usrname = $username;
+                    $p_admin = $is_admin_post? 1: 0;
+                    $p_promo = $promotion;
+                    $p_fname = $fname;
+                    $p_lname = $lname;
+                    $p_mail = $email;
+                    $p_comment = $_POST["comment"];
+                    $p_edit_id = (int) $_POST["id_edit_post"];
+
+                    // Attempt to execute the prepared statement
+                    if (!mysqli_stmt_execute($stmt)) {
+                        die("ERROR PROCESSING UPDATE QUERY : \n" . mysqli_stmt_errno($stmt) . "\n" . mysqli_stmt_error($stmt));
+                    }
+                }
+            }
+            mysqli_stmt_close($stmt);
+            header("location: /");
+            exit;
+        } else {
+            // invalid
+            die('invalid button');
         }
     }
 
     // Close connection
     mysqli_close($link);
 }
-$fname_edit = $lname_edit = $mail_edit = $promotion_edit = $password_edit = NULL;
+$fname_edit = $lname_edit = $mail_edit = $promotion_edit = $password_edit = $admin_edit = NULL;
 if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
     $id_edit = $_GET['id_edit'];
     $query_edit = "SELECT * FROM users WHERE user_id = $id_edit;";
@@ -146,6 +182,8 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
     $mail_edit = $row_edit["email"];
     $promotion_edit = $row_edit["promotion"];
     $password_edit = $row_edit["password"];
+    $admin_edit = $row_edit["admin"];
+    $comment_edit = $row_edit["comment"];
 
     mysqli_free_result($result_edit);
 } else if (isset($_GET["id_edit"]) && !$_SESSION["is_admin"]) {
@@ -172,12 +210,12 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($fname_err)) ? 'has-error' : ''; ?>">
                 <label>Firstname</label>
-                <input type="text" name="firstname" id="fname" class="form-control" value=<?php echo is_null($fname_edit)? "" : "$fname_edit";?>>
+                <input type="text" name="firstname" id="fname" class="form-control" value=<?php echo is_null($fname_edit) ? "" : "$fname_edit"; ?>>
                 <span class="help-block"><?php echo $fname_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($lname_err)) ? 'has-error' : ''; ?>">
                 <label>Lastname</label>
-                <input type="text" name="lastname" id="lname" class="form-control" value=<?php echo is_null($lname_edit)? "" : "$lname_edit"; ?>>
+                <input type="text" name="lastname" id="lname" class="form-control" value=<?php echo is_null($lname_edit) ? "" : "$lname_edit"; ?>>
                 <span class="help-block"><?php echo $lname_err; ?></span>
             </div>
             <script>
@@ -198,7 +236,7 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
             </div>
             <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
                 <label>Mail</label>
-                <input type="mail" name="email" class="form-control" value=<?php echo is_null($mail_edit)? "" : "$mail_edit"; ?>>
+                <input type="mail" name="email" class="form-control" value=<?php echo is_null($mail_edit) ? "" : "$mail_edit"; ?>>
                 <span class="help-block"><?php echo $email_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($promo_err)) ? 'has-error' : ''; ?>">
@@ -206,27 +244,34 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 <select name="promotion" class="form-control" value="<?php echo $promotion; ?>">
                     <?php
                     foreach (array("Other", "FISE1", "FISE2", "FISE3", "FISA-DE1", "FISA-DE2", "FISA-DE3", "FISA-IPSI1", "FISA-IPSI2", "FISA-IPSI3", "CITISE1", "CITISE2", "SMW", "Info-Com", "DCIMN1", "DCIMN2", "DTA", "Administration", "Alumni") as $promo_name) {
-                        echo "<option value=\"$promo_name\">$promo_name</option>";
+                        echo "<option ". ($promotion_edit==$promo_name? 'selected ' : '') . "value=\"$promo_name\">$promo_name</option>";
                     }
                     ?>
-
                 </select>
                 <span class="help-block"><?php echo $promo_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>" <?php echo isset($_GET['id_edit']) ? 'style="display: none;"' : '' ?>>
                 <label>Password</label>
                 <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
                 <span class="help-block"><?php echo $password_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>" <?php echo isset($_GET['id_edit']) ? 'style="display: none;"' : '' ?>>
                 <label>Confirm Password</label>
                 <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
                 <span class="help-block"><?php echo $confirm_password_err; ?></span>
             </div>
+            <div class="form-group" <?php echo isset($_GET['id_edit']) ? '' : 'style="display: none;"' ?>>
+                <label>Admin Rights</label>
+                <input type="checkbox" name="is_admin" class="form-control" <?php echo $admin_edit ? 'checked' : '' ?>>
+            </div>
+            <div class="form-group" <?php echo isset($_GET['id_edit']) ? '' : 'style="display: none;"' ?>>
+                <label>Comment</label>
+                <input type="text" name="comment" class="form-control" <?php echo "value='$comment_edit'"?>>
+            </div>
             <div class="form-group">
                 <?php
                 if (isset($_GET["id_edit"])) {
-                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit (WIP)\" />";
+                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit\" />";
                 } else {
                     echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_create\" value=\"Create\" />";
                 }
