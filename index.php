@@ -194,7 +194,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 								<!-- get partners from Database -->
 								<?php
 								//query
-								$query_partners = "SELECT name, location1, location2, country, city FROM partners;";
+								$query_partners = "SELECT * FROM partners;";
 								$result_partners =  mysqli_query($link, $query_partners);
 
 								//display in table
@@ -207,8 +207,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 									echo "<td>" . $row['location2'] . "</td>";
 									if ($_SESSION["is_admin"]) {
 										echo "<td>";
-										//$temp = $row['mobility_id'];
-										//echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
+										$temp = $row['partner_id'];
+										echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\" href=\"/partner.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
 										//echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
 										echo "</td>";
 									}

@@ -204,7 +204,7 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up</title>
+    <title><?php echo isset($_GET["id_edit"]) ? "Edit user n_" . $_GET['id_edit'] : 'New user' ?></title>
     <link href="forms.css" rel="stylesheet" type="text/css">
 </head>
 

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <?php
 // Include config file
 require_once "config.php";
@@ -75,48 +74,102 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check input errors before inserting in database
     if (empty($name_err) && empty($country_err) && empty($city_err) && empty($location_err)) {
+        if (isset($_POST['btn_create'])) {
 
-        // Prepare an insert statement
-        $sql = "INSERT INTO partners (name, location1, location2, country, city) VALUES (?, ?, ?, ?, ?)";
+            // Prepare an insert statement
+            $sql = "INSERT INTO partners (name, location1, location2, country, city) VALUES (?, ?, ?, ?, ?)";
 
-        if ($stmt = mysqli_prepare($link, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sddss", $p_name, $p_location1, $p_location2, $p_country, $p_city);
+            if ($stmt = mysqli_prepare($link, $sql)) {
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt, "sddss", $p_name, $p_location1, $p_location2, $p_country, $p_city);
 
-            // set parameters
-            $p_name = $name;
-            $p_location1 = floatval($location1);
-            $p_location2 = floatval($location2);
-            $p_country = $country;
-            $p_city = $city;
+                // set parameters
+                $p_name = $name;
+                $p_location1 = floatval($location1);
+                $p_location2 = floatval($location2);
+                $p_country = $country;
+                $p_city = $city;
 
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Redirect to login page
-                header("location: login.php");
-            } else {
-                echo "Something went wrong. Please try again later.";
-                echo "ERROR:\n";
-                echo mysqli_stmt_errno($stmt);
-                echo "ERROR:\n";
-                echo mysqli_stmt_error($stmt);
+                // Attempt to execute the prepared statement
+                if (!mysqli_stmt_execute($stmt)) {
+                    die("ERROR PROCESSING UPDATE QUERY : \n" . mysqli_stmt_errno($stmt) . "\n" . mysqli_stmt_error($stmt));
+                }
+
+                // Close statement
+                mysqli_stmt_close($stmt);
             }
+        } else if (isset($_POST['btn_delete'])) {
+            if (isset($_POST["id_edit_post"])) { // check if an edit id is specified
+                $temp = (int) $_POST["id_edit_post"];
+                $sql = "DELETE FROM partners WHERE (partner_id = $temp);";
+                $deleted_row =  mysqli_query($link, $sql);
+            }
+            header("location: /");
+            exit;
+        } else if (isset($_POST['btn_edit'])) {
+            if (isset($_POST["id_edit_post"])) {
+                $sql = "UPDATE partners SET name=?, location1=?, location2=?, country=?, city=? WHERE (partner_id=?);";
+                if ($stmt = mysqli_prepare($link, $sql)) {
+                    // Bind variables to the prepared statement as parameters
+                    mysqli_stmt_bind_param($stmt, "sddssi", $p_name, $p_loc1, $p_loc2, $p_country, $p_city, $p_edit_id);
 
-            // Close statement
+                    // set parameters
+                    $p_name = $name;
+                    $p_loc1 = (float) $location1;
+                    $p_loc2 = (float) $location2;
+                    $p_country = $country;
+                    $p_city = $city;
+                    $p_edit_id = (int) $_POST["id_edit_post"];
+
+                    // Attempt to execute the prepared statement
+                    if (!mysqli_stmt_execute($stmt)) {
+                        die("ERROR PROCESSING UPDATE QUERY : \n" . mysqli_stmt_errno($stmt) . "\n" . mysqli_stmt_error($stmt));
+                    }
+                }
+            }
             mysqli_stmt_close($stmt);
+            header("location: /");
+            exit;
+        } else {
+            // invalid
+            die('invalid button');
         }
     }
 
     // Close connection
     mysqli_close($link);
 }
+$name_edit = $country_edit = $city_edit = $loc1_edit = $loc2_edit = NULL;
+if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
+    $id_edit = $_GET['id_edit'];
+    $query_edit = "SELECT * FROM partners WHERE partner_id = $id_edit;";
+    $result_edit =  mysqli_query($link, $query_edit);
+    $row_edit = mysqli_fetch_array($result_edit);
+
+    $name_edit =  $row_edit["name"];
+    $country_edit =  $row_edit["country"];
+    $city_edit =  $row_edit["city"];
+    $loc1_edit =  $row_edit["location1"];
+    $loc2_edit = $row_edit["location2"];
+
+    mysqli_free_result($result_edit);
+} else if (isset($_GET["id_edit"]) && !$_SESSION["is_admin"]) {
+    echo '<pre>' . var_export($_POST, true) . '</pre>';
+    echo '<pre>' . var_export($_SESSION, true) . '</pre>';
+    die("not authorised");
+    //reject attempt if user is not admin and tries to edit a mobility
+    echo "<script>alert(\"YOU ARE NOT ADMIN.\ncontact website administrator for further information\")</script>";
+    header("location: login.php");
+    exit;
+}
 ?>
 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>New Partner</title>
+    <title><?php echo isset($_GET["id_edit"]) ? "Edit partner n_" . $_GET['id_edit'] : 'New partner' ?></title>
     <link href="forms.css" rel="stylesheet" type="text/css">
     <style type="text/css">
         body {
@@ -132,29 +185,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <div class="wrapper">
-        <h2>New Partner</h2>
-        <p>Please fill this form to create a new partner.</p>
+        <h2><?php echo isset($_GET["id_edit"]) ? "Edit partner n_" . $_GET['id_edit'] : 'New partner' ?></h2>
+        <p><?php echo isset($_GET["id_edit"]) ? 'Please edit this form to edit an existing partner.' : 'Please fill this form to create a new partner.' ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 
             <div class="form-group <?php echo (!empty($name_err)) ? 'has-error' : ''; ?>">
                 <label>Name</label>
-                <input type="text" name="name" class="form-control" value="<?php echo $name; ?>">
+                <input type="text" name="name" class="form-control" value="<?php echo isset($_GET["id_edit"]) ? $name_edit : $name; ?>">
                 <span class="help-block"><?php echo $name_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($country_err)) ? 'has-error' : ''; ?>">
                 <label>Country</label>
-                <input type="text" name="country" id="country" class="form-control" value="<?php echo $country; ?>">
+                <input type="text" name="country" id="country" class="form-control" value="<?php echo isset($_GET["id_edit"]) ? $country_edit : $country; ?>">
                 <span class="help-block"><?php echo $country_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($city_err)) ? 'has-error' : ''; ?>">
                 <label>City</label>
-                <input type="text" name="city" id="city" class="form-control" value="<?php echo $city; ?>">
+                <input type="text" name="city" id="city" class="form-control" value="<?php echo isset($_GET["id_edit"]) ? $city_edit : $city; ?>">
                 <span class="help-block"><?php echo $city_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($location_err)) ? 'has-error' : ''; ?>">
                 <label>Location</label>
-                <input type="text" name="location1" id="latitude" class="form-control" value="<?php echo $location1; ?>" readonly="readonly">
-                <input type="text" name="location2" id="longitude" class="form-control" value="<?php echo $location2; ?>" readonly="readonly">
+                <input type="text" name="location1" id="latitude" class="form-control" value="<?php echo isset($_GET["id_edit"]) ? $loc1_edit : $location1; ?>" <?php echo isset($_GET['id_edit']) ? '' : 'readonly="readonly"' ?>>
+                <input type="text" name="location2" id="longitude" class="form-control" value="<?php echo isset($_GET["id_edit"]) ? $loc2_edit : $location2; ?>" <?php echo isset($_GET['id_edit']) ? '' : 'readonly="readonly"' ?>>
                 <button type="button" class="btn btn-info view-map" id="btn-map" onclick="findLocation()">Find Location</button>
                 <script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
                 <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css" />
@@ -177,10 +230,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <span class="help-block"><?php echo $location_err; ?></span>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Submit">
-                <input type="reset" class="btn btn-default" value="Reset">
+                <?php
+                if (isset($_GET["id_edit"])) {
+                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit\" />";
+                } else {
+                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_create\" value=\"Create\" />";
+                }
+                ?>
+                <input type="submit" class="btn btn-primary" name="btn_delete" value="Delete" />
+                <input type="reset" class="btn btn-default" name="btn_reset" value="Reset" />
             </div>
-            <p class ="message">Changed your mind? <a href="login.php">go back</a>.</p>
+            <p class="message">Changed your mind? <a href="login.php">go back</a>.</p>
+            <!-- hidden input to pass the mobility ID from GET to POST -->
+            <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"]; ?>" />
         </form>
     </div>
 </body>

@@ -138,7 +138,7 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
 
 <head>
     <meta charset="UTF-8">
-    <title><?php echo isset($_GET["id_edit"]) ? 'Edit Mobility' : 'New Mobility' ?></title>
+    <title><?php echo isset($_GET["id_edit"]) ? "Edit mobility n_" . $_GET['id_edit'] : 'New mobility' ?></title>
     <link href="forms.css" rel="stylesheet" type="text/css">
     <style type="text/css">
         body {
