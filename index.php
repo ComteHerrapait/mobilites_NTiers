@@ -119,7 +119,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 									echo "<tr class=\"student-mobility\">";
 									echo "<td class=\"student-name\">";
 									echo "<span><strong>" . $row['firstname'] . " " . $row['lastname'] . "</strong></span>";
-									echo "<span class=\"student-promo\">" . $row['promotion'] . " (" .  $row['username'] .")" . "</span></td>";
+									echo "<span class=\"student-promo\">" . $row['promotion'] . " (" .  $row['username'] . ")" . "</span></td>";
 									echo "<td class=\"student-meta\">";
 									echo "<span class=\"student-country\">" . $row['country'] . ", " . $row['city'] . "</span>";
 									echo "<span class=\"student-dates\">" . $row['date_start'] . " / " . $row['date_stop'] . "</span></td>";
@@ -249,8 +249,12 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 					$js_array = json_encode($php_array);
 					echo "var mobilities = " . $js_array . ";\n";
 					?>
-					var mymap = L.map('mapID').setView([20, 0], 3);
-					var map_markers = new MapMarkers(mobilities);
+					var mymap = L.map('mapID')
+					mymap.setView([0, 0], 3);
+					mymap.setMaxBounds([
+						[-60, -180],
+						[80, 180]
+					]);
 
 					L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 						maxZoom: 18,
@@ -262,6 +266,10 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 						zoomOffset: -1
 					}).addTo(mymap);
 
+					mymap.options.minZoom = 3;
+					mymap.options.maxZoom = 12;
+
+					var map_markers = new MapMarkers(mobilities);
 					map_markers.partners.forEach(function(p) {
 						marker = new L.marker(p.getLngLat())
 							.bindPopup(p.getPopupText())
