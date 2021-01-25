@@ -169,8 +169,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 								echo "<span>" . $row['created_at'] . "</span></td>";
 								if ($_SESSION["is_admin"]) {
 									echo "<td class=\"list-edit\">";
-									$temp = $row['mobility_id'];
-									echo "<a data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
+									$temp = $row['user_id'];
+									echo "<a data-toggle=\"tooltip\" href=\"/user.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
 									echo "</td>";
 								};
 								echo "</tr>";
@@ -198,8 +198,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 								echo "<span>" . $row['location2'] . "</span></td>";
 								if ($_SESSION["is_admin"]) {
 									echo "<td class=\"list-edit\">";
-									$temp = $row['mobility_id'];
-									echo "<a data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
+									$temp = $row['partner_id'];
+									echo "<a data-toggle=\"tooltip\" href=\"/partner.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
 									echo "</td>";
 								};
 								echo "</tr>";
