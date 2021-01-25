@@ -103,8 +103,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 							?>
 				</ul>
 				<form class="form-inline my-2 my-lg-0">
-					<input class="form-control mr-sm-2" type="search" placeholder="Search">
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+					<input class="form-control mr-sm-2" type="search" id="search-bar" placeholder="filter" onkeyup="simpleSearch()">
 				</form>
 			</div>
 		</nav>
@@ -113,7 +112,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 		<h1>Student Mobilities in Telecom Saint Etienne</h1>
 	</div>
 	<div class="main">
-		<input type="search" id="search-bar" placeholder="filter results" onkeyup="simpleSearch()" size="16">
 		<div class="container-lg">
 			<div id="table" style="display: block">
 				<div>
