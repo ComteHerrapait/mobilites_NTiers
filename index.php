@@ -211,10 +211,59 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 					</table>
 				</div>
 			</div>
-		</div>
-		<div class="div-map" id="map" style="display: none">
-			<div id="mapID">
-				<!--map is here-->
+			<div class="div-map" id="map" style="display: none">
+				<div id="mapID">
+					<!--map is here-->
+				</div>
+				<script type='text/javascript'>
+					<?php
+					//this code passes the result of the mysql request in php to a javascript array
+					$php_array = [];
+					$query_mobilities = "SELECT location1, location2, name, firstname, lastname, partner_id, city, country FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
+					$result_mobilities =  mysqli_query($link, $query_mobilities);
+					while ($row = mysqli_fetch_array($result_mobilities)) {
+						$loc = [
+							$row['name'], //0
+							floatval($row['location1']), //1
+							floatval($row['location2']), //2
+							$row['firstname'], //3
+							$row['lastname'], //4
+							$row['partner_id'], //5
+							$row['city'], //6
+							$row['country'] //7
+						];
+						array_push($php_array, $loc);
+					};
+					$js_array = json_encode($php_array);
+					echo "var mobilities = " . $js_array . ";\n";
+					?>
+					var mymap = L.map('mapID')
+					mymap.setView([0, 0], 3);
+					mymap.setMaxBounds([
+						[-60, -180],
+						[80, 180]
+					]);
+
+					L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+						maxZoom: 18,
+						attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+							'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+							'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+						id: 'mapbox/streets-v11',
+						tileSize: 512,
+						zoomOffset: -1
+					}).addTo(mymap);
+
+					mymap.options.minZoom = 3;
+					mymap.options.maxZoom = 12;
+
+					var map_markers = new MapMarkers(mobilities);
+					map_markers.partners.forEach(function(p) {
+						marker = new L.marker(p.getLngLat())
+							.bindPopup(p.getPopupText())
+							.addTo(mymap);
+					});
+				</script>
 			</div>
 			<script type='text/javascript'>
 				<?php
