@@ -92,15 +92,15 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 			<div class="collapse navbar-collapse" id="navbarTogglerDemo02">
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-					<button class="btn btn-info" onclick="viewMap()">View Map <span class="sr-only">(current)</span></button>
+					<button class="btn btn-info" id="btn-map" onclick="viewMap()">View Map <span class="sr-only">(current)</span></button>
 					<button class="btn btn-info" onclick="window.location.href='mobility.php'">New Mobility</button>
 					<button class="btn btn-info" onclick="window.location.href='partner.php'">New Partner</button>
-					<button class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
 					<?php
 					if ($_SESSION['is_admin']) {
 						echo "<button type=\"button\" class=\"btn btn-info\" onclick=\"window.location.href='user.php'\">New User</button>";
 					}
 					?>
+					<button class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
 				</ul>
 				<form class="form-inline my-2 my-lg-0">
 					<input class="form-control mr-sm-2" type="search" id="search-bar" placeholder="filter" onkeyup="simpleSearch()">
