@@ -103,7 +103,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 		<div class="main">
 			<input type="search" id="search-bar" placeholder="filter results" onkeyup="simpleSearch()" size="16">
 			<div class="container-lg">
-				<div class="list-group" style="display: block">
+				<div class="list-group" id="table" style="display: block">
 					<div>
 						<table class="table-mobility">
 							<h1>Mobilities</h1>
