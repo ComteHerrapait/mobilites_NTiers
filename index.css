@@ -46,3 +46,17 @@
     font-family: 'Open Sans', sans-serif;
     height: 100%;
 }
+
+.student-name span{
+    display: block;
+    text-align: left;
+  }
+  
+.student-meta span{
+    display: block;
+    text-align: right;  
+}
+  
+.table-mobility {
+    width: 100%;
+}

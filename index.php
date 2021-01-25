@@ -55,6 +55,27 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 			}
 		};
 	</script>
+
+	<style>
+		.student-name span {
+			display: block;
+			text-align: left;
+		}
+
+		.student-meta span {
+			display: block;
+			text-align: right;
+		}
+
+		.table-mobility tr td {
+			padding: 8px 0;
+			border-bottom: 1px solid #ddd;
+		}
+
+		.table-mobility {
+			width: 100%;
+		}
+	</style>
 </head>
 
 <body>
@@ -82,50 +103,32 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 		<div class="main">
 			<input type="search" id="search-bar" placeholder="filter results" onkeyup="simpleSearch()" size="16">
 			<div class="container-lg">
-				<div class="table-responsive" id="table" style="display: block">
-					<div class="table-wrapper">
-						<table class="table table-bordered" id="table-mobility">
+				<div class="list-group" style="display: block">
+					<div>
+						<table class="table-mobility">
 							<h1>Mobilities</h1>
-							<thead>
-								<!-- header for the table -->
-								<tr>
-									<th>First Name</th>
-									<th>Last Name</th>
-									<th>Promotion</th>
-									<th>Country</th>
-									<th>City</th>
-									<th>Start Date</th>
-									<th>End Date</th>
-									<?php if ($_SESSION["is_admin"]) {
-										echo "<th>Edit</th>";
-									} ?>
-								</tr>
-							</thead>
-							<tbody>
-								<!-- get mobilities from Database -->
+							<tbody class="mobility-tbody">
 								<?php
 								//query
-								$query_mobilities = "SELECT mobility_id, firstname, lastname, promotion, country, city, date_start, date_stop, location1, location2, name FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
+								$query_mobilities = "SELECT * FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
 								$result_mobilities =  mysqli_query($link, $query_mobilities);
 								//$num = mysqli_num_rows($result_mobilities);//number of rows from the query
 
 								//display in table
 								while ($row = mysqli_fetch_array($result_mobilities)) {
-									echo "<tr>";
-									echo "<td>" . $row['firstname'] . "</td>";
-									echo "<td>" . $row['lastname'] . "</td>";
-									echo "<td>" . $row['promotion'] . "</td>";
-									echo "<td>" . $row['country'] . "</td>";
-									echo "<td>" . $row['city'] . "</td>";
-									echo "<td>" . $row['date_start'] . "</td>";
-									echo "<td>" . $row['date_stop'] . "</td>";
+									echo "<tr class=\"student-mobility\">";
+									echo "<td class=\"student-name\">";
+									echo "<span><strong>" . $row['firstname'] . " " . $row['lastname'] . "</strong></span>";
+									echo "<span class=\"student-promo\">" . $row['promotion'] . " (" .  $row['username'] .")" . "</span></td>";
+									echo "<td class=\"student-meta\">";
+									echo "<span class=\"student-country\">" . $row['country'] . ", " . $row['city'] . "</span>";
+									echo "<span class=\"student-dates\">" . $row['date_start'] . " / " . $row['date_stop'] . "</span></td>";
 									if ($_SESSION["is_admin"]) {
-										echo "<td>";
+										echo "<td class=\"student-edit\">";
 										$temp = $row['mobility_id'];
-										echo "<a class=\"edit\" title=\"Edit\" data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
-										//echo "<a class=\"delete\" title=\"Delete\" data-toggle=\"tooltip\"><i class=\"material-icons\">&#xE872;</i></a>";
+										echo "<a data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
 										echo "</td>";
-									}
+									};
 									echo "</tr>";
 								};
 								?>
