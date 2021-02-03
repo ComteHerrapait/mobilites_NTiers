@@ -48,10 +48,13 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 				}, 500);
 				document.getElementById("table").style.display = "none"
 				document.getElementById("btn-map").innerHTML = "View Table";
+				document.getElementById("label").style.display = "none";
+				
 			} else if (document.getElementById("map").style.display != "none") {
 				document.getElementById("map").style.display = "none"
 				document.getElementById("table").style.display = "block"
 				document.getElementById("btn-map").innerHTML = "View Map";
+				document.getElementById("label").style.display = "block";
 			}
 		};
 
@@ -88,26 +91,26 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 <body>
 	<div class="wrap-all">
 		<nav class="navbar navbar-expand-lg navbar-light bg-primary">
-			<strong style="color:white"><?php echo "Bienvenue " . $_SESSION["username"] . " ";
+			<strong style="color:white; font-style: italic"><?php echo "Bienvenue " . $_SESSION["username"] . " ";
 			if ($_SESSION["is_admin"]) {
 				echo "(admin) ";
 			}
 			?></strong>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" id="toggler" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 
 			<div class="collapse navbar-collapse" id="navbarTogglerDemo02">
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-					<button class="btn btn-info" id="btn-map" onclick="viewMap()">View Map <span class="sr-only">(current)</span></button>
-					<button class="btn btn-info" onclick="window.location.href='mobility.php'">New Mobility</button>
-					<button class="btn btn-info" onclick="window.location.href='partner.php'">New Partner</button>
+					<button class="btn" id="btn-map" onclick="viewMap()" data-toggle="collapse" data-target=".navbar-collapse.show">View Map <span class="sr-only">(current)</span></button>
+					<button class="btn" onclick="window.location.href='mobility.php'" data-toggle="collapse" data-target=".navbar-collapse.show">New Mobility</button>
+					<button class="btn" onclick="window.location.href='partner.php'" data-toggle="collapse" data-target=".navbar-collapse.show">New Partner</button>
 					<?php
 					if ($_SESSION['is_admin']) {
-						echo "<button type=\"button\" class=\"btn btn-info\" onclick=\"window.location.href='user.php'\">New User</button>";
+						echo "<button type=\"button\" class=\"btn\" onclick=\"window.location.href='user.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">New User</button>";
 					}
 					?>
-					<button class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
+					<button class="btn" onclick="window.location.href='logout.php'" data-toggle="collapse" data-target=".navbar-collapse.show">Logout</button>
 				</ul>
 				<form class="form-inline my-2 my-lg-0">
 					<input class="form-control mr-sm-2" type="search" id="search-bar" placeholder="Filter" onkeyup="simpleSearch()">
@@ -115,16 +118,16 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 			</div>
 		</nav>
 	</div>
-	<div class="bartop">
+	<div class="bartop" id="label">
 		<h1>Student Mobilities in Telecom Saint Etienne</h1>
 	</div>
 	<div class="main">
 		<div>
 			<div id="table" style="display: block">
 				<div class="btn-group-wrap btn-sm" role="group" style="text-align: center;">
-					<button class="btn btn-info" id="btn-mobilities" onclick="viewMobilities()">Mobilities</button>
-					<button class="btn btn-info" id="btn-users" onclick="viewUsers()">Users</button>
-					<button class="btn btn-info" id="btn-partners" onclick="viewPartners()">Partners</button>
+					<button class="btn" id="btn-mobilities" onclick="viewMobilities()">Mobilities</button>
+					<button class="btn" id="btn-users" onclick="viewUsers()">Users</button>
+					<button class="btn" id="btn-partners" onclick="viewPartners()">Partners</button>
 				</div>
 				<div class="container-lg">
 					<div id="table-mobilities" style="display: block;">
@@ -227,8 +230,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 				</div>
 			</div>
 			<div class="div-map" id="map" style="display: none">
-				<div id="mapID" style="position: absolute; top: 12em; width: 98%; bottom: 2em;
-				margin-left: 1%;">
+				<div id="mapID" style="position: absolute; top: 6em; width: 98%; bottom: 2em;
+				margin-left: 1%; z-index: -1;">
 					<!--map is here-->
 				</div>
 				<script type='text/javascript'>
@@ -292,8 +295,12 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 <style>
 	.main {
 		margin-left: 0;
+		z-index: auto;
 	}
 
+	div {
+		z-index: auto;
+	}
 	.list-name span {
 		display: block;
 		text-align: left;
@@ -316,4 +323,28 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 	.list-edit {
 		text-align: right;
 	}
+
+	.btn{
+		border-color: #007BFF;
+		background-color: #007BFF;
+		color: white;
+		white-space: nowrap;
+		text-align: center;
+	}
+
+	.btn:hover{
+		background-color: #045cb9;
+		color: white;
+	}
+
+	.btn:active {
+		background: #045cb9;
+		color: white;
+	}
+
+	.btn:focus {
+		background: #045cb9;
+		text-emphasis-color: white;
+	}
+
 </style>
