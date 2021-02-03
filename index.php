@@ -54,38 +54,45 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 				document.getElementById("btn-map").innerHTML = "View Map";
 			}
 		};
+
+		function viewMobilities() {
+			//TODO : select which table to show
+			if ((document.getElementById("table-users").style.display != "none") || (document.getElementById("table-partners").style.display != "none")) {
+				document.getElementById("table-mobilities").style.display = "block";
+				document.getElementById("table-users").style.display = "none";
+				document.getElementById("table-partners").style.display = "none";
+			}
+		};
+
+		function viewUsers() {
+			//TODO : select which table to show
+			if ((document.getElementById("table-mobilities").style.display != "none") || (document.getElementById("table-partners").style.display != "none")) {
+				document.getElementById("table-mobilities").style.display = "none";
+				document.getElementById("table-users").style.display = "block";
+				document.getElementById("table-partners").style.display = "none";
+			}
+		};
+
+		function viewPartners() {
+			//TODO : select which table to show
+			if ((document.getElementById("table-users").style.display != "none") || (document.getElementById("table-mobilities").style.display != "none")) {
+				document.getElementById("table-partners").style.display = "block";
+				document.getElementById("table-users").style.display = "none";
+				document.getElementById("table-mobilities").style.display = "none";
+			}
+		};
 	</script>
 
-	<style>
-		.list-name span {
-			display: block;
-			text-align: left;
-		}
-
-		.list-meta span {
-			display: block;
-			text-align: right;
-		}
-
-		.list tr td {
-			padding: 8px 0;
-			border-bottom: 1px solid #ddd;
-		}
-
-		.list {
-			width: 100%;
-		}
-
-		.list-edit {
-			text-align: right;
-		}
-	</style>
 </head>
 
 <body>
 	<div class="wrap-all">
 		<nav class="navbar navbar-expand-lg navbar-light bg-primary">
-			<a class="navbar-brand" href="#">Students Mobility in TSE</a>
+			<strong style="color:white"><?php echo "Bienvenue " . $_SESSION["username"] . " ";
+			if ($_SESSION["is_admin"]) {
+				echo "(admin) ";
+			}
+			?></strong>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -103,7 +110,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 					<button class="btn btn-info" onclick="window.location.href='logout.php'">Logout</button>
 				</ul>
 				<form class="form-inline my-2 my-lg-0">
-					<input class="form-control mr-sm-2" type="search" id="search-bar" placeholder="filter" onkeyup="simpleSearch()">
+					<input class="form-control mr-sm-2" type="search" id="search-bar" placeholder="Filter" onkeyup="simpleSearch()">
 				</form>
 			</div>
 		</nav>
@@ -112,105 +119,116 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 		<h1>Student Mobilities in Telecom Saint Etienne</h1>
 	</div>
 	<div class="main">
-		<div class="container-lg">
+		<div>
 			<div id="table" style="display: block">
-				<div>
-					<table class="list list-mobility">
-						<h1>Mobilities</h1>
-						<tbody class="mobility-tbody">
-							<?php
-							//query
-							$query_mobilities = "SELECT * FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
-							$result_mobilities =  mysqli_query($link, $query_mobilities);
-							//$num = mysqli_num_rows($result_mobilities);//number of rows from the query
+				<div class="btn-group-wrap btn-sm" role="group" style="text-align: center;">
+					<button class="btn btn-info" id="btn-mobilities" onclick="viewMobilities()">Mobilities</button>
+					<button class="btn btn-info" id="btn-users" onclick="viewUsers()">Users</button>
+					<button class="btn btn-info" id="btn-partners" onclick="viewPartners()">Partners</button>
+				</div>
+				<div class="container-lg">
+					<div id="table-mobilities" style="display: block;">
+						<table class="list list-mobility">
+							<tbody class="mobility-tbody">
+								<?php
+								//query
+								$query_mobilities = "SELECT * FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
+								$result_mobilities =  mysqli_query($link, $query_mobilities);
+								//$num = mysqli_num_rows($result_mobilities);//number of rows from the query
 
-							//display in table
-							while ($row = mysqli_fetch_array($result_mobilities)) {
-								echo "<tr class=\"list-mobility\">";
-								echo "<td class=\"list-name\">";
-								echo "<span><strong>" . $row['firstname'] . " " . $row['lastname'] . "</strong></span>";
-								echo "<span>" . $row['promotion'] .  "</span></td>";
-								echo "<td class=\"list-meta\">";
-								echo "<span>" . $row['country'] . ", " . $row['city'] . "</span>";
-								echo "<span>" . $row['date_start'] . " / " . $row['date_stop'] . "</span></td>";
-								if ($_SESSION["is_admin"]) {
-									echo "<td class=\"list-edit\">";
-									$temp = $row['mobility_id'];
-									echo "<a data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
-									echo "</td>";
+								//display in table
+								while ($row = mysqli_fetch_array($result_mobilities)) {
+									echo "<tr class=\"list-mobility\">";
+									echo "<td class=\"list-name\">";
+									echo "<span><strong>" . $row['firstname'] . " " . $row['lastname'] . "</strong></span>";
+									echo "<span>" . $row['promotion'] .  "</span></td>";
+									echo "<td class=\"list-meta\">";
+									echo "<span>" . $row['country'] . ", " . $row['city'] . "</span>";
+									echo "<span>" . $row['date_start'] . " / " . $row['date_stop'] . "</span></td>";
+									if ($_SESSION["is_admin"]) {
+										echo "<td class=\"list-edit\">";
+										$temp = $row['mobility_id'];
+										echo "<a data-toggle=\"tooltip\" href=\"/mobility.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
+										echo "</td>";
+									};
+									echo "</tr>";
 								};
-								echo "</tr>";
-							};
-							?>
-						</tbody>
-					</table>
-					<table class="list list-users">
-						<h1>Users</h1>
-						<tbody>
-							<!-- get users from Database -->
-							<?php
-							//query
-							$query_users = "SELECT user_id, firstname, lastname, promotion, email, comment, admin, created_at FROM users;";
-							$result_users =  mysqli_query($link, $query_users);
+								?>
+							</tbody>
+						</table>
+					</div>
+					<div id="table-users" style="display: none;">
+						<table class="list list-users">
 
-							//display in table
-							while ($row = mysqli_fetch_array($result_users)) {
-								echo "<tr class=\"list-users\">";
-								echo "<td class=\"list-name\">";
-								$isAdmin = "";
-								if ($row['admin'] == '1')
-									$isAdmin = "ADMIN";
-								echo "<span><strong>" . $row['firstname'] . " " . $row['lastname'] . "</strong><strong class=\"admin\"
+							<tbody>
+								<!-- get users from Database -->
+								<?php
+								//query
+								$query_users = "SELECT user_id, firstname, lastname, promotion, email, comment, admin, created_at FROM users;";
+								$result_users =  mysqli_query($link, $query_users);
+
+								//display in table
+								while ($row = mysqli_fetch_array($result_users)) {
+									echo "<tr class=\"list-users\">";
+									echo "<td class=\"list-name\">";
+									$isAdmin = "";
+									if ($row['admin'] == '1')
+										$isAdmin = "ADMIN";
+									echo "<span><strong>" . $row['firstname'] . " " . $row['lastname'] . "</strong><strong class=\"admin\"
 									style=\"color: red\"> " . $isAdmin . "</strong></span>";
-								echo "<span>" . $row['promotion'] . "</span></td>";
-								echo "<td class=\"list-comment\">" . $row['comment'] . "</td>";
-								echo "<td class=\"list-meta\">";
-								echo "<span" . $row['email'] . "</span>";
-								echo "<span>" . $row['created_at'] . "</span></td>";
-								if ($_SESSION["is_admin"]) {
-									echo "<td class=\"list-edit\">";
-									$temp = $row['user_id'];
-									echo "<a data-toggle=\"tooltip\" href=\"/user.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
-									echo "</td>";
+									echo "<span>" . $row['promotion'] . "</span></td>";
+									echo "<td class=\"list-comment\">" . $row['comment'] . "</td>";
+									echo "<td class=\"list-meta\">";
+									echo "<span" . $row['email'] . "</span>";
+									echo "<span>" . $row['created_at'] . "</span></td>";
+									if ($_SESSION["is_admin"]) {
+										echo "<td class=\"list-edit\">";
+										$temp = $row['user_id'];
+										echo "<a data-toggle=\"tooltip\" href=\"/user.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
+										echo "</td>";
+									};
+									echo "</tr>";
 								};
-								echo "</tr>";
-							};
-							?>
-						</tbody>
-					</table>
-					<table class="list list-partners">
-						<h1>Partners</h1>
-						<tbody>
-							<!-- get partners from Database -->
-							<?php
-							//query
-							$query_partners = "SELECT * FROM partners;";
-							$result_partners =  mysqli_query($link, $query_partners);
+								?>
+							</tbody>
+						</table>
+					</div>
+					<div id="table-partners" style="display: none;">
+						<table class="list list-partners">
 
-							//display in table
-							while ($row = mysqli_fetch_array($result_partners)) {
-								echo "<tr class=\"list-partners\">";
-								echo "<td class=\"list-name\">";
-								echo "<span><strong>" . $row['name'] . "</span></strong>";
-								echo "<span>" . $row['country'] . ", " . $row['city'] . "</span></td>";
-								echo "<td class=\"list-meta\">";
-								echo "<span>" . $row['location1'] . "</span>";
-								echo "<span>" . $row['location2'] . "</span></td>";
-								if ($_SESSION["is_admin"]) {
-									echo "<td class=\"list-edit\">";
-									$temp = $row['partner_id'];
-									echo "<a data-toggle=\"tooltip\" href=\"/partner.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
-									echo "</td>";
+							<tbody>
+								<!-- get partners from Database -->
+								<?php
+								//query
+								$query_partners = "SELECT * FROM partners;";
+								$result_partners =  mysqli_query($link, $query_partners);
+
+								//display in table
+								while ($row = mysqli_fetch_array($result_partners)) {
+									echo "<tr class=\"list-partners\">";
+									echo "<td class=\"list-name\">";
+									echo "<span><strong>" . $row['name'] . "</span></strong>";
+									echo "<span>" . $row['country'] . ", " . $row['city'] . "</span></td>";
+									echo "<td class=\"list-meta\">";
+									echo "<span>" . $row['location1'] . "</span>";
+									echo "<span>" . $row['location2'] . "</span></td>";
+									if ($_SESSION["is_admin"]) {
+										echo "<td class=\"list-edit\">";
+										$temp = $row['partner_id'];
+										echo "<a data-toggle=\"tooltip\" href=\"/partner.php?id_edit=$temp\"><i class=\"material-icons\">&#xE254;</i></a>";
+										echo "</td>";
+									};
+									echo "</tr>";
 								};
-								echo "</tr>";
-							};
-							?>
-						</tbody>
-					</table>
+								?>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 			<div class="div-map" id="map" style="display: none">
-				<div id="mapID">
+				<div id="mapID" style="position: absolute; top: 12em; width: 98%; bottom: 2em;
+				margin-left: 1%;">
 					<!--map is here-->
 				</div>
 				<script type='text/javascript'>
@@ -270,3 +288,32 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 </body>
 
 </html>
+
+<style>
+	.main {
+		margin-left: 0;
+	}
+
+	.list-name span {
+		display: block;
+		text-align: left;
+	}
+
+	.list-meta span {
+		display: block;
+		text-align: right;
+	}
+
+	.list tr td {
+		padding: 8px 0;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.list {
+		width: 100%;
+	}
+
+	.list-edit {
+		text-align: right;
+	}
+</style>

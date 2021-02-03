@@ -3,22 +3,6 @@
     overflow: hidden;
 }
 
-
-.barleft {
-    width: 15%;
-    float: left;
-    min-height: 100%;
-    position: fixed;
-}
-
-.barleft .btn {
-    display: block
-}
-
-.barleft .user-info {
-    margin: auto;
-}
-
 .bartop {
     top: 0;
     height: 15%;
@@ -27,18 +11,6 @@
 .bartop h1 {
     text-align: center;
     display: block;
-}
-
-.main {
-    margin-left: 15%;
-    min-height: 100%;
-}
-
-#mapID {
-    position: absolute;
-    top: 4em;
-    bottom: 0;
-    width: 80%;
 }
 
 .body {
