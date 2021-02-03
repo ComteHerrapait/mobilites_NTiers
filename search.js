@@ -12,11 +12,20 @@ function simpleSearch() {
         }
         row.style.display = present ? '' : 'none';
     }
+    filterMap()
+}
+
+function filterMap() {
+    let searchString = cleanString(document.getElementById('search-bar').value);
+    let map = document.getElementById("mapID");
+    console.log(map);
+    console.log(marker)
 }
 
 function matchSearch(content) {
     let searchString = cleanString(document.getElementById('search-bar').value);
     let content_clean = cleanString(content);
+    console.log(searchString, "->", content_clean);
     return content_clean.indexOf(searchString) > -1;
 }
 

@@ -43,9 +43,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 			//TODO : select which table to show
 			if (document.getElementById("table").style.display != "none") {
 				document.getElementById("map").style.display = "block";
-				setTimeout(function() {
-					mymap.invalidateSize()
-				}, 500);
 				document.getElementById("table").style.display = "none"
 				document.getElementById("btn-map").innerHTML = "View Table";
 			} else if (document.getElementById("map").style.display != "none") {
@@ -89,10 +86,10 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 	<div class="wrap-all">
 		<nav class="navbar navbar-expand-lg navbar-light bg-primary">
 			<strong style="color:white"><?php echo "Bienvenue " . $_SESSION["username"] . " ";
-			if ($_SESSION["is_admin"]) {
-				echo "(admin) ";
-			}
-			?></strong>
+										if ($_SESSION["is_admin"]) {
+											echo "(admin) ";
+										}
+										?></strong>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -253,32 +250,13 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 					$js_array = json_encode($php_array);
 					echo "var mobilities = " . $js_array . ";\n";
 					?>
-					var mymap = L.map('mapID')
-					mymap.setView([0, 0], 3);
-					mymap.setMaxBounds([
-						[-60, -180],
-						[80, 180]
-					]);
-
-					L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-						maxZoom: 18,
-						attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-							'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-							'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-						id: 'mapbox/streets-v11',
-						tileSize: 512,
-						zoomOffset: -1
-					}).addTo(mymap);
-
-					mymap.options.minZoom = 3;
-					mymap.options.maxZoom = 12;
-
-					var map_markers = new MapMarkers(mobilities);
-					map_markers.partners.forEach(function(p) {
-						marker = new L.marker(p.getLngLat())
-							.bindPopup(p.getPopupText())
-							.addTo(mymap);
-					});
+					var map = new MyMap();
+					map.draw();
+					if (document.getElementById("table").style.display != "none") {
+						setTimeout(function() {
+							map.mymap.invalidateSize()
+						}, 500);
+					}
 				</script>
 			</div>
 		</div>
