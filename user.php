@@ -204,22 +204,23 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
     <title><?php echo isset($_GET["id_edit"]) ? "Edit user n_" . $_GET['id_edit'] : 'New user' ?></title>
-    <link href="forms.css" rel="stylesheet" type="text/css">
+    <link href="form.css" rel="stylesheet" type="text/css">
 </head>
 
 <body onLoad="update_username()">
-    <div class="wrapper">
-        <h2><?php echo isset($_GET["id_edit"]) ? "Edit User n_" . $_GET['id_edit'] : 'New User' ?></h2>
+    <div class="wrapper fadeInDown user" id="formContent">
+        <h2 class="active"><?php echo isset($_GET["id_edit"]) ? "Edit User n_" . $_GET['id_edit'] : 'New User' ?></h2>
         <p><?php echo isset($_GET["id_edit"]) ? 'Please edit this form to edit an existing user.' : 'Please fill this form to create a new user.' ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group <?php echo (!empty($fname_err)) ? 'has-error' : ''; ?>">
-                <label>Firstname</label>
+            <div class="fadeIn first form-group <?php echo (!empty($fname_err)) ? 'has-error' : ''; ?>">
+                <div><label>Firstname</label></div>
                 <input type="text" name="firstname" id="fname" class="form-control" value=<?php echo is_null($fname_edit) ? "" : "$fname_edit"; ?>>
                 <span class="help-block"><?php echo $fname_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($lname_err)) ? 'has-error' : ''; ?>">
-                <label>Lastname</label>
+            <div class="fadeIn second form-group <?php echo (!empty($lname_err)) ? 'has-error' : ''; ?>">
+                <div><label>Lastname</label></div>
                 <input type="text" name="lastname" id="lname" class="form-control" value=<?php echo is_null($lname_edit) ? "" : "$lname_edit"; ?>>
                 <span class="help-block"><?php echo $lname_err; ?></span>
             </div>
@@ -234,18 +235,18 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 fname.addEventListener('input', update_username);
                 lname.addEventListener('input', update_username);
             </script>
-            <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
-                <label>Username</label>
+            <div class="fadeIn third form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
+                <div><label>Username</label></div>
                 <input type="text" name="username" id="usrname" class="form-control" value="<?php echo $username; ?>" readonly="readonly">
                 <span class="help-block"><?php echo $username_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
-                <label>Mail</label>
+            <div class="fadeIn fourth form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
+                <div><label>Mail</label></div>
                 <input type="mail" name="email" class="form-control" value=<?php echo is_null($mail_edit) ? "" : "$mail_edit"; ?>>
                 <span class="help-block"><?php echo $email_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($promo_err)) ? 'has-error' : ''; ?>">
-                <label>Promotion</label>
+            <div class="fadeIn fifth form-group <?php echo (!empty($promo_err)) ? 'has-error' : ''; ?>">
+                <div><label>Promotion</label></div>
                 <select name="promotion" class="form-control" value="<?php echo $promotion; ?>">
                     <?php
                     foreach (array("Other", "FISE1", "FISE2", "FISE3", "FISA-DE1", "FISA-DE2", "FISA-DE3", "FISA-IPSI1", "FISA-IPSI2", "FISA-IPSI3", "CITISE1", "CITISE2", "SMW", "Info-Com", "DCIMN1", "DCIMN2", "DTA", "Administration", "Alumni") as $promo_name) {
@@ -255,25 +256,25 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 </select>
                 <span class="help-block"><?php echo $promo_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>" <?php echo isset($_GET['id_edit']) ? 'style="display: none;"' : '' ?>>
-                <label>Password</label>
+            <div class="fadeIn sixth form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>" <?php echo isset($_GET['id_edit']) ? 'style="display: none;"' : '' ?>>
+                <div><label>Password</label></div>
                 <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
                 <span class="help-block"><?php echo $password_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>" <?php echo isset($_GET['id_edit']) ? 'style="display: none;"' : '' ?>>
-                <label>Confirm Password</label>
+            <div class="fadeIn seventh form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>" <?php echo isset($_GET['id_edit']) ? 'style="display: none;"' : '' ?>>
+                <div><label>Confirm Password</label></div>
                 <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
                 <span class="help-block"><?php echo $confirm_password_err; ?></span>
             </div>
-            <div class="form-group" <?php echo isset($_GET['id_edit']) ? '' : 'style="display: none;"' ?>>
-                <label>Admin Rights</label>
+            <div class="fadeIn eighth form-group" <?php echo isset($_GET['id_edit']) ? '' : 'style="display: none;"' ?>>
+                <div><label>Admin Rights</label></div>
                 <input type="checkbox" name="is_admin" class="form-control" <?php echo $admin_edit ? 'checked' : '' ?>>
             </div>
-            <div class="form-group" <?php echo isset($_GET['id_edit']) ? '' : 'style="display: none;"' ?>>
-                <label>Comment</label>
+            <div class="fadeIn nineth form-group" <?php echo isset($_GET['id_edit']) ? '' : 'style="display: none;"' ?>>
+                <div><label>Comment</label></div>
                 <input type="text" name="comment" class="form-control" <?php echo "value='$comment_edit'"?>>
             </div>
-            <div class="form-group">
+            <div class="fadeIn tenth form-group">
                 <?php
                 if (isset($_GET["id_edit"])) {
                     echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit\" />";
@@ -284,7 +285,7 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 <input type="submit" class="btn btn-primary" name="btn_delete" value="Delete" />
                 <input type="reset" class="btn btn-default" name="btn_reset" value="Reset" />
             </div>
-            <p class="message">Changed your mind ? <a href="/">go back</a>.</p>
+            <p class="message underlineHover">Changed your mind ? <a href="/">go back</a>.</p>
             <!-- hidden input to pass the mobility ID from GET to POST -->
             <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"]; ?>" />
         </form>
