@@ -94,29 +94,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
     <title>Login</title>
-    <link href="forms.css" rel="stylesheet" type="text/css">
+    <link href="form.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div class="wrapper">
-        <h2>Login</h2>
+    <div class="wrapper fadeInDown" id="formContent" >
+        <h2 class="active">Login</h2>
         <p>Please fill in your credentials to login.</p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
+            <div class="fadeIn first form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
                 <label>Username</label>
                 <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
                 <span class="help-block"><?php echo $username_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
+            <div class="fadeIn second form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
                 <label>Password</label>
                 <input type="password" name="password" class="form-control">
                 <span class="help-block"><?php echo $password_err; ?></span>
             </div>
-            <div class="form-group">
+            <div class="form-group fadeIn third">
                 <input type="submit" class="btn btn-primary" value="Login">
             </div>
-            <p class = message>Don't have an account? <a href="register.php">Sign up now</a>.</p>
+            <p class ="message underlineHover">Don't have an account? <a href="register.php">Sign up now</a>.</p>
         </form>
     </div>
 </body>

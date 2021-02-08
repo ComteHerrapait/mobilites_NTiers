@@ -153,13 +153,13 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
     $loc2_edit = $row_edit["location2"];
 
     mysqli_free_result($result_edit);
-} else if (isset($_GET["id_edit"]) && !$_SESSION["is_admin"]) {
-    echo '<pre>' . var_export($_POST, true) . '</pre>';
-    echo '<pre>' . var_export($_SESSION, true) . '</pre>';
-    die("not authorised");
-    //reject attempt if user is not admin and tries to edit a mobility
+} else if (!$_SESSION["is_admin"]) {
+    //echo '<pre>' . var_export($_POST, true) . '</pre>';
+    //echo '<pre>' . var_export($_SESSION, true) . '</pre>';
+    //reject attempt if user is not admin and tries to edit a partner
     echo "<script>alert(\"YOU ARE NOT ADMIN.\ncontact website administrator for further information\")</script>";
     header("location: login.php");
+    die("not authorised");
     exit;
 }
 ?>
@@ -169,43 +169,34 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
     <title><?php echo isset($_GET["id_edit"]) ? "Edit partner n_" . $_GET['id_edit'] : 'New partner' ?></title>
-    <link href="forms.css" rel="stylesheet" type="text/css">
-    <style type="text/css">
-        body {
-            font: 14px sans-serif;
-        }
-
-        .wrapper {
-            width: 350px;
-            padding: 20px;
-        }
-    </style>
+    <link href="form.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div class="wrapper">
-        <h2><?php echo isset($_GET["id_edit"]) ? "Edit partner n_" . $_GET['id_edit'] : 'New partner' ?></h2>
+    <div class="wrapper fadeInDown" id="formContent">
+        <h2 class="active"><?php echo isset($_GET["id_edit"]) ? "Edit partner n_" . $_GET['id_edit'] : 'New partner' ?></h2>
         <p><?php echo isset($_GET["id_edit"]) ? 'Please edit this form to edit an existing partner.' : 'Please fill this form to create a new partner.' ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 
-            <div class="form-group <?php echo (!empty($name_err)) ? 'has-error' : ''; ?>">
-                <label>Name</label>
+            <div class="fadeIn first form-group <?php echo (!empty($name_err)) ? 'has-error' : ''; ?>">
+                <div><label>Name</label></div>
                 <input type="text" name="name" class="form-control" value="<?php echo isset($_GET["id_edit"]) ? $name_edit : $name; ?>">
                 <span class="help-block"><?php echo $name_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($country_err)) ? 'has-error' : ''; ?>">
-                <label>Country</label>
+            <div class="fadeIn second form-group <?php echo (!empty($country_err)) ? 'has-error' : ''; ?>">
+                <div><label>Country</label></div>
                 <input type="text" name="country" id="country" class="form-control" value="<?php echo isset($_GET["id_edit"]) ? $country_edit : $country; ?>">
                 <span class="help-block"><?php echo $country_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($city_err)) ? 'has-error' : ''; ?>">
-                <label>City</label>
+            <div class="fadeIn third form-group <?php echo (!empty($city_err)) ? 'has-error' : ''; ?>">
+                <div><label>City</label></div>
                 <input type="text" name="city" id="city" class="form-control" value="<?php echo isset($_GET["id_edit"]) ? $city_edit : $city; ?>">
                 <span class="help-block"><?php echo $city_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($location_err)) ? 'has-error' : ''; ?>">
-                <label>Location</label>
+            <div class="fadeIn fourth form-group <?php echo (!empty($location_err)) ? 'has-error' : ''; ?>">
+                <div><label>Location</label></div>
                 <input type="text" name="location1" id="latitude" class="form-control" value="<?php echo isset($_GET["id_edit"]) ? $loc1_edit : $location1; ?>" <?php echo isset($_GET['id_edit']) ? '' : 'readonly="readonly"' ?>>
                 <input type="text" name="location2" id="longitude" class="form-control" value="<?php echo isset($_GET["id_edit"]) ? $loc2_edit : $location2; ?>" <?php echo isset($_GET['id_edit']) ? '' : 'readonly="readonly"' ?>>
                 <button type="button" class="btn btn-info view-map" id="btn-map" onclick="findLocation()">Find Location</button>
@@ -229,7 +220,7 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 </script>
                 <span class="help-block"><?php echo $location_err; ?></span>
             </div>
-            <div class="form-group">
+            <div class="fadeIn fifth form-group">
                 <?php
                 if (isset($_GET["id_edit"])) {
                     echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit\" />";
@@ -240,7 +231,7 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 <input type="submit" class="btn btn-primary" name="btn_delete" value="Delete" />
                 <input type="reset" class="btn btn-default" name="btn_reset" value="Reset" />
             </div>
-            <p class="message">Changed your mind? <a href="login.php">go back</a>.</p>
+            <p class="message underlineHover">Changed your mind? <a href="login.php">go back</a>.</p>
             <!-- hidden input to pass the mobility ID from GET to POST -->
             <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"]; ?>" />
         </form>

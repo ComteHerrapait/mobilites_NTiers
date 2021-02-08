@@ -126,11 +126,13 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
     $date_start_edit = $row_edit['date_start'];
 
     mysqli_free_result($result_edit);
-} else if (isset($_GET["id_edit"]) && !$_SESSION["is_admin"]) {
+} else if (!$_SESSION["is_admin"]) {
+    //echo '<pre>' . var_export($_POST, true) . '</pre>';
+    //echo '<pre>' . var_export($_SESSION, true) . '</pre>';
     //reject attempt if user is not admin and tries to edit a mobility
     echo "<script>alert(\"YOU ARE NOT ADMIN.\ncontact website administrator for further information\")</script>";
-
     header("location: login.php");
+    die("not authorised");
     exit;
 }
 ?>
@@ -138,27 +140,18 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
     <title><?php echo isset($_GET["id_edit"]) ? "Edit mobility n_" . $_GET['id_edit'] : 'New mobility' ?></title>
-    <link href="forms.css" rel="stylesheet" type="text/css">
-    <style type="text/css">
-        body {
-            font: 14px sans-serif;
-        }
-
-        .wrapper {
-            width: 350px;
-            padding: 20px;
-        }
-    </style>
+    <link href="form.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div class="wrapper">
-        <h2><?php echo isset($_GET["id_edit"]) ? "Edit Mobility n_" . $_GET['id_edit'] : 'New Mobility' ?></h2>
+    <div class="wrapper fadeInDown" id="formContent">
+        <h2 class="active"><?php echo isset($_GET["id_edit"]) ? "Edit Mobility n_" . $_GET['id_edit'] : 'New Mobility' ?></h2>
         <p><?php echo isset($_GET["id_edit"]) ? 'Please edit this form to edit an existing mobility.' : 'Please fill this form to create a new mobility.' ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($student_err)) ? 'has-error' : ''; ?>">
-                <label>Student</label>
+                <div><label>Student</label></div>
                 <select name="student" class="form-control" id="student" value="<?php echo $student; ?>">
                     <?php
                     $query = "select user_id, username from users";
@@ -178,8 +171,8 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 </select>
                 <span class="help-block"><?php echo $student_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($student_err)) ? 'has-error' : ''; ?>">
-                <label>Destination</label>
+            <div class="fadeIn first form-group <?php echo (!empty($student_err)) ? 'has-error' : ''; ?>">
+                <div><label>Destination</label></div>
                 <select name="destination" class="form-control" value="<?php echo $destination; ?>">
                     <?php
                     $query = "select partner_id,name,city,country from partners";
@@ -195,17 +188,17 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 </select>
                 <span class="help-block"><?php echo $destination_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($date_start_err)) ? 'has-error' : ''; ?>">
-                <label>Starting Date</label>
+            <div class="fadeIn second form-group <?php echo (!empty($date_start_err)) ? 'has-error' : ''; ?>">
+                <div><label>Starting Date</label></div>
                 <input type="date" name="date_start" class="form-control" value=<?php echo is_null($date_start_edit) ? date("Y-m-d") : date($date_start_edit); ?>>
                 <span class="help-block"><?php echo $date_start_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($date_stop_err)) ? 'has-error' : ''; ?>">
-                <label>Ending Date</label>
+            <div class="fadeIn third form-group <?php echo (!empty($date_stop_err)) ? 'has-error' : ''; ?>">
+                <div><label>Ending Date</label></div>
                 <input type="date" name="date_stop" class="form-control" value=<?php echo is_null($date_stop_edit) ? date("Y-m-d") : date($date_stop_edit); ?>>
                 <span class="help-block"><?php echo $date_stop_err; ?></span>
             </div>
-            <div class="form-group">
+            <div class="fadeIn fourth form-group">
                 <?php
                 if ($_GET["id_edit"]) {
                     echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit\" />";
@@ -216,7 +209,7 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 <input type="submit" class="btn btn-primary" name="btn_delete" value="Delete" />
                 <input type="reset" class="btn btn-default" name="btn_reset" value="Reset" />
             </div>
-            <p class="message">Changed your mind? <a href="login.php">go back</a>.</p>
+            <p class="message underlineHover">Changed your mind? <a href="login.php">go back</a>.</p>
             <!-- hidden input to pass the mobility ID from GET to POST -->
             <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"]; ?>" /> 
         </form>
