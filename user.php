@@ -19,7 +19,7 @@ $username_err = $password_err = $confirm_password_err = $fname_err = $lname_err 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate username
     if (empty($_POST["username"])) {
-        $username_err = "Please enter a username.";
+        $username_err = "Veuillez entrer un nom d'utilisateur.";
     } else if (isset($_POST['btn_create'])) {
         //check if username exists when creating new user
 
@@ -39,12 +39,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 mysqli_stmt_store_result($stmt);
 
                 if (mysqli_stmt_num_rows($stmt) == 1) {
-                    $username_err = "This username is already taken.";
+                    $username_err = "Ce nom d'utilisateur est déjà pris.";
                 } else {
                     $username = trim($_POST["username"]);
                 }
             } else {
-                echo "Oops! Something went wrong. Please try again later.";
+                echo "Oops! Quelque chose cloche. Veuillez réessayer plus tard.";
             }
 
             // Close statement
@@ -58,20 +58,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($_POST["id_edit_post"])) {
         // Validate password
         if (empty($_POST["password"])) {
-            $password_err = "Please enter a password.";
+            $password_err = "Veuillez entrer un mot de passe.";
         } elseif (strlen(trim($_POST["password"])) < 6) {
-            $password_err = "Password must have atleast 6 characters.";
+            $password_err = "Le mot de passe doit comprendre au moins 6 charactères.";
         } else {
             $password = trim($_POST["password"]);
         }
 
         // Validate confirm password
         if (empty($_POST["confirm_password"])) {
-            $confirm_password_err = "Please confirm password.";
+            $confirm_password_err = "Veuillez confirmer le mot de passe.";
         } else {
             $confirm_password = trim($_POST["confirm_password"]);
             if (empty($password_err) && ($password != $confirm_password)) {
-                $confirm_password_err = "Password did not match.";
+                $confirm_password_err = "Les mots de passe ne correspondent pas.";
             }
         }
     } else {
@@ -80,28 +80,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // validate promotion
     if (empty($_POST["promotion"])) {
-        $promo_err = "Please enter a promotion.";
+        $promo_err = "Veuillez renseigner une promotion.";
     } else {
         $promotion = trim($_POST["promotion"]);
     }
 
     // validate email
     if (empty($_POST["email"])) {
-        $email_err = "Please enter a email.";
+        $email_err = "Veuillez renseigner une adresse mail.";
     } elseif (filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
         $email = trim($_POST["email"]);
     } else {
-        $email_err = "This email is invalid.";
+        $email_err = "Cet email n'est pas valide.";
     }
 
     // validate first and last name
     if (empty($_POST["lastname"])) {
-        $lname_err = "Please enter a last name.";
+        $lname_err = "Veuillez renseigner un nom.";
     } else {
         $lname = trim($_POST["lastname"]);
     }
     if (empty($_POST["firstname"])) {
-        $fname_err = "Please enter a first name.";
+        $fname_err = "Veuillez renseigner un prénom.";
     } else {
         $fname = trim($_POST["firstname"]);
     }
@@ -195,7 +195,7 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
     //echo '<pre>' . var_export($_POST, true) . '</pre>';
     //echo '<pre>' . var_export($_SESSION, true) . '</pre>';
     //reject attempt if user is not admin and tries to edit an user
-    echo "<script>alert(\"YOU ARE NOT ADMIN.\ncontact website administrator for further information\")</script>";
+    echo "<script>alert(\"VOUS N'ÊTES PAS ADMIN.\nContactez un administrateur pour plus d'informations.\")</script>";
     header("location: login.php");
     die("not authorised");
     exit;
@@ -208,22 +208,22 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
-    <title><?php echo isset($_GET["id_edit"]) ? "Edit user n_" . $_GET['id_edit'] : 'New user' ?></title>
+    <title><?php echo isset($_GET["id_edit"]) ? "Modifier l'utilisateur n_" . $_GET['id_edit'] : 'Nouvel Utilisateur' ?></title>
     <link href="form.css" rel="stylesheet" type="text/css">
 </head>
 
 <body onLoad="update_username()">
     <div class="wrapper fadeInDown user" id="formContent">
-        <h2 class="active"><?php echo isset($_GET["id_edit"]) ? "Edit User n_" . $_GET['id_edit'] : 'New User' ?></h2>
-        <p><?php echo isset($_GET["id_edit"]) ? 'Please edit this form to edit an existing user.' : 'Please fill this form to create a new user.' ?></p>
+        <h2 class="active"><?php echo isset($_GET["id_edit"]) ? "Modifier l'utilisateur n_" . $_GET['id_edit'] : 'Nouvel Utilisateur' ?></h2>
+        <p><?php echo isset($_GET["id_edit"]) ? 'Veuillez modifier ce formulaire pour modifier un utilisateur existant.' : 'Veuillez modifier ce formulaire pour créer un nouvel utilisateur.' ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="fadeIn first form-group <?php echo (!empty($fname_err)) ? 'has-error' : ''; ?>">
-                <div><label>Firstname</label></div>
+                <div><label>Prénom</label></div>
                 <input type="text" name="firstname" id="fname" class="form-control" value=<?php echo is_null($fname_edit) ? "" : "$fname_edit"; ?>>
                 <span class="help-block"><?php echo $fname_err; ?></span>
             </div>
             <div class="fadeIn second form-group <?php echo (!empty($lname_err)) ? 'has-error' : ''; ?>">
-                <div><label>Lastname</label></div>
+                <div><label>Nom</label></div>
                 <input type="text" name="lastname" id="lname" class="form-control" value=<?php echo is_null($lname_edit) ? "" : "$lname_edit"; ?>>
                 <span class="help-block"><?php echo $lname_err; ?></span>
             </div>
@@ -239,12 +239,12 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 lname.addEventListener('input', update_username);
             </script>
             <div class="fadeIn third form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
-                <div><label>Username</label></div>
+                <div><label>Nom d'utilisateur</label></div>
                 <input type="text" name="username" id="usrname" class="form-control" value="<?php echo $username; ?>" readonly="readonly">
                 <span class="help-block"><?php echo $username_err; ?></span>
             </div>
             <div class="fadeIn fourth form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
-                <div><label>Mail</label></div>
+                <div><label>Email</label></div>
                 <input type="mail" name="email" class="form-control" value=<?php echo is_null($mail_edit) ? "" : "$mail_edit"; ?>>
                 <span class="help-block"><?php echo $email_err; ?></span>
             </div>
@@ -252,7 +252,7 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 <div><label>Promotion</label></div>
                 <select name="promotion" class="form-control" value="<?php echo $promotion; ?>">
                     <?php
-                    foreach (array("Other", "FISE1", "FISE2", "FISE3", "FISA-DE1", "FISA-DE2", "FISA-DE3", "FISA-IPSI1", "FISA-IPSI2", "FISA-IPSI3", "CITISE1", "CITISE2", "SMW", "Info-Com", "DCIMN1", "DCIMN2", "DTA", "Administration", "Alumni") as $promo_name) {
+                    foreach (array("Autre", "FISE1", "FISE2", "FISE3", "FISA-DE1", "FISA-DE2", "FISA-DE3", "FISA-IPSI1", "FISA-IPSI2", "FISA-IPSI3", "CITISE1", "CITISE2", "SMW", "Info-Com", "DCIMN1", "DCIMN2", "DTA", "Administration", "Alumni") as $promo_name) {
                         echo "<option ". ($promotion_edit==$promo_name? 'selected ' : '') . "value=\"$promo_name\">$promo_name</option>";
                     }
                     ?>
@@ -260,35 +260,35 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
                 <span class="help-block"><?php echo $promo_err; ?></span>
             </div>
             <div class="fadeIn sixth form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>" <?php echo isset($_GET['id_edit']) ? 'style="display: none;"' : '' ?>>
-                <div><label>Password</label></div>
+                <div><label>Mot de passe</label></div>
                 <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
                 <span class="help-block"><?php echo $password_err; ?></span>
             </div>
             <div class="fadeIn seventh form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>" <?php echo isset($_GET['id_edit']) ? 'style="display: none;"' : '' ?>>
-                <div><label>Confirm Password</label></div>
+                <div><label>Confirmer mot de passe</label></div>
                 <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
                 <span class="help-block"><?php echo $confirm_password_err; ?></span>
             </div>
             <div class="fadeIn eighth form-group" <?php echo isset($_GET['id_edit']) ? '' : 'style="display: none;"' ?>>
-                <div><label>Admin Rights</label></div>
+                <div><label>Droits d'administrateur</label></div>
                 <input type="checkbox" name="is_admin" class="form-control" <?php echo $admin_edit ? 'checked' : '' ?>>
             </div>
             <div class="fadeIn nineth form-group" <?php echo isset($_GET['id_edit']) ? '' : 'style="display: none;"' ?>>
-                <div><label>Comment</label></div>
+                <div><label>Commentaire</label></div>
                 <input type="text" name="comment" class="form-control" <?php echo "value='$comment_edit'"?>>
             </div>
             <div class="fadeIn tenth form-group">
                 <?php
                 if (isset($_GET["id_edit"])) {
-                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Edit\" />";
+                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_edit\" value=\"Modifier\" />";
                 } else {
-                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_create\" value=\"Create\" />";
+                    echo "<input type=\"submit\" class=\"btn btn-primary\" name=\"btn_create\" value=\"Créer\" />";
                 }
                 ?>
-                <input type="submit" class="btn btn-primary" name="btn_delete" value="Delete" />
+                <input type="submit" class="btn btn-primary" name="btn_delete" value="Supprimer" />
                 <input type="reset" class="btn btn-default" name="btn_reset" value="Reset" />
             </div>
-            <p class="message underlineHover">Changed your mind ? <a href="/">go back</a>.</p>
+            <p class="message underlineHover">Vous avez changé d'avis ? <a href="/">Retour</a>.</p>
             <!-- hidden input to pass the mobility ID from GET to POST -->
             <input type="hidden" name="id_edit_post" value="<?php echo $_GET["id_edit"]; ?>" />
         </form>

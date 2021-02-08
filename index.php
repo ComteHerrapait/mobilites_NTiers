@@ -47,13 +47,13 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 					mymap.invalidateSize()
 				}, 500);
 				document.getElementById("table").style.display = "none"
-				document.getElementById("btn-map").innerHTML = "View Table";
+				document.getElementById("btn-map").innerHTML = "Voir les tableaux";
 				document.getElementById("label").style.display = "none";
 				
 			} else if (document.getElementById("map").style.display != "none") {
 				document.getElementById("map").style.display = "none"
 				document.getElementById("table").style.display = "block"
-				document.getElementById("btn-map").innerHTML = "View Map";
+				document.getElementById("btn-map").innerHTML = "Voir la carte";
 				document.getElementById("label").style.display = "block";
 			}
 		};
@@ -102,32 +102,32 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 			<div class="collapse navbar-collapse" id="navbarTogglerDemo02">
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-					<button class="btn" id="btn-map" onclick="viewMap()" data-toggle="collapse" data-target=".navbar-collapse.show">View Map <span class="sr-only">(current)</span></button>
+					<button class="btn" id="btn-map" onclick="viewMap()" data-toggle="collapse" data-target=".navbar-collapse.show">Voir la carte<span class="sr-only">(current)</span></button>
 					<?php
 					if ($_SESSION['is_admin']) {
-						echo "<button class=\"btn\" onclick=\"window.location.href='mobility.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">New Mobility</button>";
-						echo "<button class=\"btn\" onclick=\"window.location.href='partner.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">New Partner</button>";
-						echo "<button type=\"button\" class=\"btn\" onclick=\"window.location.href='user.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">New User</button>";
+						echo "<button class=\"btn\" onclick=\"window.location.href='mobility.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">Nouvelle Mobilité</button>";
+						echo "<button class=\"btn\" onclick=\"window.location.href='partner.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">Nouveau Partenaire</button>";
+						echo "<button type=\"button\" class=\"btn\" onclick=\"window.location.href='user.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">Nouvel Utilisateur</button>";
 					}
 					?>
-					<button class="btn" onclick="window.location.href='logout.php'" data-toggle="collapse" data-target=".navbar-collapse.show">Logout</button>
+					<button class="btn" onclick="window.location.href='logout.php'" data-toggle="collapse" data-target=".navbar-collapse.show">Se déconnecter</button>
 				</ul>
 				<form class="form-inline my-2 my-lg-0">
-					<input class="form-control mr-sm-2" type="search" id="search-bar" placeholder="Filter" onkeyup="simpleSearch()">
+					<input class="form-control mr-sm-2" type="search" id="search-bar" placeholder="Filtrer..." onkeyup="simpleSearch()">
 				</form>
 			</div>
 		</nav>
 	</div>
 	<div class="bartop" id="label">
-		<h1>Student Mobilities in Telecom Saint Etienne</h1>
+		<h1>Mobilités Étudiantes à Telecom Saint-Étienne</h1>
 	</div>
 	<div class="main">
 		<div>
 			<div id="table" style="display: block">
 				<div class="btn-group-wrap btn-sm" role="group" style="text-align: center;">
-					<button class="btn" id="btn-mobilities" onclick="viewMobilities()">Mobilities</button>
-					<button class="btn" id="btn-users" onclick="viewUsers()">Users</button>
-					<button class="btn" id="btn-partners" onclick="viewPartners()">Partners</button>
+					<button class="btn" id="btn-mobilities" onclick="viewMobilities()">Mobilités</button>
+					<button class="btn" id="btn-users" onclick="viewUsers()">Utilisateurs</button>
+					<button class="btn" id="btn-partners" onclick="viewPartners()">Partenaires</button>
 				</div>
 				<div class="container-lg">
 					<div id="table-mobilities" style="display: block;">
