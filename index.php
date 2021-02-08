@@ -90,7 +90,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 <body>
 	<div class="wrap-all">
-		<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+		<nav class="navbar navbar-expand-lg navbar-light bg-primary" id="header">
 			<strong style="color:white; font-style: italic"><?php echo "Bienvenue " . $_SESSION["username"] . " ";
 			if ($_SESSION["is_admin"]) {
 				echo "(admin) ";
@@ -347,4 +347,10 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 		text-emphasis-color: white;
 	}
 
+	#header {
+		position: fixed;
+		width: 100%;
+		top: 0;
+		z-index: 999;
+	}
 </style>
