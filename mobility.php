@@ -126,11 +126,13 @@ if (isset($_GET["id_edit"]) && $_SESSION["is_admin"]) {
     $date_start_edit = $row_edit['date_start'];
 
     mysqli_free_result($result_edit);
-} else if (isset($_GET["id_edit"]) && !$_SESSION["is_admin"]) {
+} else if (!$_SESSION["is_admin"]) {
+    //echo '<pre>' . var_export($_POST, true) . '</pre>';
+    //echo '<pre>' . var_export($_SESSION, true) . '</pre>';
     //reject attempt if user is not admin and tries to edit a mobility
     echo "<script>alert(\"YOU ARE NOT ADMIN.\ncontact website administrator for further information\")</script>";
-
     header("location: login.php");
+    die("not authorised");
     exit;
 }
 ?>

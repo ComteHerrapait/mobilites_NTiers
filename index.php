@@ -103,10 +103,10 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 			<div class="collapse navbar-collapse" id="navbarTogglerDemo02">
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 					<button class="btn" id="btn-map" onclick="viewMap()" data-toggle="collapse" data-target=".navbar-collapse.show">View Map <span class="sr-only">(current)</span></button>
-					<button class="btn" onclick="window.location.href='mobility.php'" data-toggle="collapse" data-target=".navbar-collapse.show">New Mobility</button>
-					<button class="btn" onclick="window.location.href='partner.php'" data-toggle="collapse" data-target=".navbar-collapse.show">New Partner</button>
 					<?php
 					if ($_SESSION['is_admin']) {
+						echo "<button class=\"btn\" onclick=\"window.location.href='mobility.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">New Mobility</button>";
+						echo "<button class=\"btn\" onclick=\"window.location.href='partner.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">New Partner</button>";
 						echo "<button type=\"button\" class=\"btn\" onclick=\"window.location.href='user.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">New User</button>";
 					}
 					?>
