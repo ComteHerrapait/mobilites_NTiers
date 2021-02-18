@@ -49,7 +49,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 				document.getElementById("table").style.display = "none"
 				document.getElementById("btn-map").innerHTML = "Voir les tableaux";
 				document.getElementById("label").style.display = "none";
-				
+
 			} else if (document.getElementById("map").style.display != "none") {
 				document.getElementById("map").style.display = "none"
 				document.getElementById("table").style.display = "block"
@@ -92,10 +92,10 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 	<div class="wrap-all">
 		<nav class="navbar navbar-expand-lg navbar-light bg-primary" id="header">
 			<strong style="color:white; font-style: italic"><?php echo "Bienvenue " . $_SESSION["username"] . " ";
-			if ($_SESSION["is_admin"]) {
-				echo "(admin) ";
-			}
-			?></strong>
+															if ($_SESSION["is_admin"]) {
+																echo "(admin) ";
+															}
+															?></strong>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" id="toggler" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -130,9 +130,15 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 					<button class="btn" id="btn-partners" onclick="viewPartners()">Partenaires</button>
 				</div>
 				<div class="container-lg">
+					<form class="form-inline my-2 my-lg-0">
+						<input class="form-control mr-sm-2" type="date" id="search-mobility-date" placeholder="date" onchange="complexSearchMobility()">
+						<input class="form-control mr-sm-2" type="search" id="search-mobility-place" placeholder="lieu" onkeyup="complexSearchMobility()">
+						<input class="form-control mr-sm-2" type="search" id="search-mobility-promotion" placeholder="promotion" onkeyup="complexSearchMobility()">
+						<input class="form-control mr-sm-2" type="search" id="search-mobility-student" placeholder="étudiant" onkeyup="complexSearchMobility()">
+					</form>
 					<div id="table-mobilities" style="display: block;">
 						<table class="list list-mobility">
-							<tbody class="mobility-tbody">
+							<tbody class="mobility-tbody" id="body-mobilities">
 								<?php
 								//query
 								$query_mobilities = "SELECT * FROM mobilities JOIN users USING(user_id) JOIN partners USING(partner_id);";
@@ -301,6 +307,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 	div {
 		z-index: auto;
 	}
+
 	.list-name span {
 		display: block;
 		text-align: left;
@@ -324,7 +331,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 		text-align: right;
 	}
 
-	.btn{
+	.btn {
 		border-color: #007BFF;
 		background-color: #007BFF;
 		color: white;
@@ -332,7 +339,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 		text-align: center;
 	}
 
-	.btn:hover{
+	.btn:hover {
 		background-color: #045cb9;
 		color: white;
 	}
