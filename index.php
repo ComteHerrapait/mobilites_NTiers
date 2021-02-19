@@ -110,7 +110,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 						echo "<button type=\"button\" class=\"btn\" onclick=\"window.location.href='user.php'\" data-toggle=\"collapse\" data-target=\".navbar-collapse.show\">Nouvel Utilisateur</button>";
 					}
 					?>
-					<button class="btn" onclick="window.location.href='logout.php'" data-toggle="collapse" data-target=".navbar-collapse.show">Se déconnecter</button>
+					<button class="btn" onclick="window.location.href='logout.php'" data-toggle="collapse" data-target=".navbar-collapse.show">Déconnexion</button>
 				</ul>
 				<form class="form-inline my-2 my-lg-0">
 					<input class="form-control mr-sm-2" type="search" id="search-bar" placeholder="Filtrer..." onkeyup="simpleSearch()">
@@ -119,7 +119,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 		</nav>
 	</div>
 	<div class="bartop" id="label">
-		<h1>Mobilités Étudiantes à Telecom Saint-Étienne</h1>
+		<h1  style="margin-top: 70px;">Mobilités Étudiantes à Telecom Saint-Étienne</h1>
 	</div>
 	<div class="main">
 		<div>
@@ -171,8 +171,10 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 							<input class="form-control mr-sm-2" type="search" id="search-user-name" placeholder="nom" onkeyup="complexSearchUser()">
 							<input class="form-control mr-sm-2" type="search" id="search-user-promotion" placeholder="promotion" onkeyup="complexSearchUser()">
 							<input class="form-control mr-sm-2" type="search" id="search-user-comment" placeholder="commentaire" onkeyup="complexSearchUser()">
-							<input class="form-control mr-sm-2" type="checkbox" id="search-user-admin" placeholder="admin" onchange="complexSearchUser()">
-							<label for="search-user-admin">ADMIN</label>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="checkbox" id="search-user-admin" placeholder="admin" onchange="complexSearchUser()">
+								<label class="form-check-label" for="search-user-admin">ADMIN</label>
+							</div>
 						</form>
 						<table class="list list-users">
 							<tbody id="body-users">
