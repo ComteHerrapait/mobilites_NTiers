@@ -130,13 +130,13 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 					<button class="btn" id="btn-partners" onclick="viewPartners()">Partenaires</button>
 				</div>
 				<div class="container-lg">
-					<form class="form-inline my-2 my-lg-0">
-						<input class="form-control mr-sm-2" type="date" id="search-mobility-date" placeholder="date" onchange="complexSearchMobility()">
-						<input class="form-control mr-sm-2" type="search" id="search-mobility-place" placeholder="lieu" onkeyup="complexSearchMobility()">
-						<input class="form-control mr-sm-2" type="search" id="search-mobility-promotion" placeholder="promotion" onkeyup="complexSearchMobility()">
-						<input class="form-control mr-sm-2" type="search" id="search-mobility-student" placeholder="étudiant" onkeyup="complexSearchMobility()">
-					</form>
 					<div id="table-mobilities" style="display: block;">
+						<form class="form-inline my-2 my-lg-0">
+							<input class="form-control mr-sm-2" type="date" id="search-mobility-date" placeholder="date" onchange="complexSearchMobility()">
+							<input class="form-control mr-sm-2" type="search" id="search-mobility-place" placeholder="lieu" onkeyup="complexSearchMobility()">
+							<input class="form-control mr-sm-2" type="search" id="search-mobility-promotion" placeholder="promotion" onkeyup="complexSearchMobility()">
+							<input class="form-control mr-sm-2" type="search" id="search-mobility-student" placeholder="étudiant" onkeyup="complexSearchMobility()">
+						</form>
 						<table class="list list-mobility">
 							<tbody class="mobility-tbody" id="body-mobilities">
 								<?php
@@ -167,9 +167,15 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 						</table>
 					</div>
 					<div id="table-users" style="display: none;">
+						<form class="form-inline my-2 my-lg-0">
+							<input class="form-control mr-sm-2" type="search" id="search-user-name" placeholder="nom" onkeyup="complexSearchUser()">
+							<input class="form-control mr-sm-2" type="search" id="search-user-promotion" placeholder="promotion" onkeyup="complexSearchUser()">
+							<input class="form-control mr-sm-2" type="search" id="search-user-comment" placeholder="commentaire" onkeyup="complexSearchUser()">
+							<input class="form-control mr-sm-2" type="checkbox" id="search-user-admin" placeholder="admin" onchange="complexSearchUser()">
+							<label for="search-user-admin">ADMIN</label>
+						</form>
 						<table class="list list-users">
-
-							<tbody>
+							<tbody id="body-users">
 								<!-- get users from Database -->
 								<?php
 								//query
@@ -203,9 +209,13 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 						</table>
 					</div>
 					<div id="table-partners" style="display: none;">
+						<form class="form-inline my-2 my-lg-0">
+							<input class="form-control mr-sm-2" type="search" id="search-partner-name" placeholder="nom" onkeyup="complexSearchPartner()">
+							<input class="form-control mr-sm-2" type="search" id="search-partner-location" placeholder="lieu" onkeyup="complexSearchPartner()">
+						</form>
 						<table class="list list-partners">
 
-							<tbody>
+							<tbody id="body-partners">
 								<!-- get partners from Database -->
 								<?php
 								//query
