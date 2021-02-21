@@ -1,5 +1,9 @@
 # mobilites_NTiers
 
+## Auteurs
+ * Léon DELCROIX
+ * Emilion GODDET
+
 ## Site internet
 
 Vous trouverez notre site aux adresses suivantes :
