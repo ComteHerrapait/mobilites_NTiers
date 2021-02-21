@@ -134,21 +134,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
     <title>Sign Up</title>
-    <link href="register.css" rel="stylesheet" type="text/css">
+    <link href="form.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div class="wrapper">
-        <h2>Sign Up</h2>
+    <div class="wrapper fadeInDown register" id="formContent">
+        <h2 class="active">Sign Up</h2>
         <p>Please fill this form to create an account.</p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group <?php echo (!empty($fname_err)) ? 'has-error' : ''; ?>">
+            <div class="fadeIn first form-group <?php echo (!empty($fname_err)) ? 'has-error' : ''; ?>">
                 <label>Firstname</label>
                 <input type="text" name="firstname" id="fname" class="form-control" value="<?php echo $fname; ?>">
                 <span class="help-block"><?php echo $fname_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($lname_err)) ? 'has-error' : ''; ?>">
+            <div class="fadeIn second form-group <?php echo (!empty($lname_err)) ? 'has-error' : ''; ?>">
                 <label>Lastname</label>
                 <input type="text" name="lastname" id="lname" class="form-control" value="<?php echo $lname; ?>">
                 <span class="help-block"><?php echo $lname_err; ?></span>
@@ -164,17 +165,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 fname.addEventListener('input', update_username);
                 lname.addEventListener('input', update_username);
             </script>
-            <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
+            <div class="fadeIn third form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
                 <label>Username</label>
                 <input type="text" name="username" id="usrname" class="form-control" value="<?php echo $username; ?>" readonly="readonly">
                 <span class="help-block"><?php echo $username_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
-                <label>Mail</label>
+            <div class="fadeIn fourth form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
+                <div><label>Mail</label></div>
                 <input type="mail" name="email" class="form-control" value="<?php echo $email; ?>">
                 <span class="help-block"><?php echo $email_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($promo_err)) ? 'has-error' : ''; ?>">
+            <div class="fadeIn fifth form-group <?php echo (!empty($promo_err)) ? 'has-error' : ''; ?>">
                 <label>Promotion</label>
                 <select name="promotion" class="form-control" value="<?php echo $promotion; ?>">
                     <?php
@@ -186,21 +187,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </select>
                 <span class="help-block"><?php echo $promo_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
+            <div class="fadeIn sixth form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
                 <label>Password</label>
                 <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
                 <span class="help-block"><?php echo $password_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">
+            <div class="fadeIn seventh form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">
                 <label>Confirm Password</label>
                 <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
                 <span class="help-block"><?php echo $confirm_password_err; ?></span>
             </div>
-            <div class="form-group">
+            <div class="fadeIn eighth form-group">
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-default" value="Reset">
             </div>
-            <p class ="message">Already have an account? <a href="login.php">Login here</a>.</p>
+            <p class ="message underlineHover">Already have an account? <a href="login.php">Login here</a>.</p>
         </form>
     </div>
 </body>

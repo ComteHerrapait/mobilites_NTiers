@@ -20,14 +20,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if username is empty
     if (empty($_POST["username"])) {
-        $username_err = "Please enter username.";
+        $username_err = "Veuillez renseigner votre nom d'utilisateur.";
     } else {
         $username = trim($_POST["username"]);
     }
 
     // Check if password is empty
     if (empty($_POST["password"])) {
-        $password_err = "Please enter your password.";
+        $password_err = "Veuillez renseigner votre mot de passe.";
     } else {
         $password = trim($_POST["password"]);
     }
@@ -65,18 +65,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $_SESSION["is_admin"] = $is_admin == "1";
 
                             // Redirect user to welcome page
-                            header("location: index.php");
+                            header("location: /");
                         } else {
                             // Display an error message if password is not valid
-                            $password_err = "The password you entered was not valid.";
+                            $password_err = "Le mot de passe renseigné n'est pas valide.";
                         }
                     }
                 } else {
                     // Display an error message if username doesn't exist
-                    $username_err = "No account found with that username.";
+                    $username_err = "Il n'y pas de compter avec ce nom d'utilisateur.";
                 }
             } else {
-                echo "Oops! Something went wrong. Please try again later.";
+                echo "Oops! Quelque chose cloche. Veuillez réessayer plus tard.";
             }
 
             // Close statement
@@ -94,30 +94,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <link href="login.css" rel="stylesheet" type="text/css">
+    <meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
+    <title>Connexion</title>
+    <link href="form.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div class="wrapper">
-        <h2>Login</h2>
-        <p>Please fill in your credentials to login.</p>
+    <div class="wrapper fadeInDown" id="formContent" >
+        <h2 class="active">SE CONNECTER</h2>
+        <p>Veuillez renseigner vos informations pour vous connecter</p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
-                <label>Username</label>
+            <div class="fadeIn first form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
+                <label>Nom d'utilisateur</label>
                 <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
                 <span class="help-block"><?php echo $username_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-                <label>Password</label>
+            <div class="fadeIn second form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
+                <label>Mot de passe</label>
                 <input type="password" name="password" class="form-control">
                 <span class="help-block"><?php echo $password_err; ?></span>
             </div>
-            <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Login">
+            <div class="form-group fadeIn third">
+                <input type="submit" class="btn btn-primary" value="SE CONNECTER">
             </div>
-            <p class = message>Don't have an account? <a href="register.php">Sign up now</a>.</p>
+            <p class ="message underlineHover">Vous n'avez pas encore de compte ? 
+            <a href="register.php">Enregistre-vous maintenant.</a>.</p>
         </form>
     </div>
 </body>

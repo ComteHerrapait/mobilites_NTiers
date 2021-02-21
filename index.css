@@ -1,0 +1,35 @@
+.wrap-all {
+    height: 100%;
+    overflow: hidden;
+}
+
+.bartop {
+    top: 0;
+    height: 15%;
+}
+
+.bartop h1 {
+    text-align: center;
+    display: block;
+}
+
+.body {
+    color: #404E67;
+    background: #F5F7FA;
+    font-family: 'Open Sans', sans-serif;
+    height: 100%;
+}
+
+.student-name span{
+    display: block;
+    text-align: left;
+  }
+  
+.student-meta span{
+    display: block;
+    text-align: right;  
+}
+  
+.table-mobility {
+    width: 100%;
+}
